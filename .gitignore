@@ -1,0 +1,15 @@
+venv/
+
+__pycache__/
+*.pyc
+
+.env
+
+logs/
+airflow/logs/
+
+datasets/raw/
+
+*.zip
+
+.airflowignore

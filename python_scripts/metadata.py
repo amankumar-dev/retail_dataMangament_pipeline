@@ -1,6 +1,6 @@
 import pandas as pd
 import uuid
-from export_csvData import customers,geolocation,orders,orderItems,payment,productName,product,reviews,sellers
+from extract import customers,geolocation,orders,orderItems,payment,productName,product,reviews,sellers
 
 batch_id = str(uuid.uuid4())
 
@@ -21,4 +21,3 @@ productName=ingestion(productName,'productName.csv')
 product=ingestion(product,'product.csv')
 reviews=ingestion(reviews,'reviews.csv')
 sellers=ingestion(sellers,'sellers.csv')
-

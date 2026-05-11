@@ -15,9 +15,11 @@ def ingestion(df,source):
 customers=ingestion(customers,'customer.csv')
 geolocation=ingestion(geolocation,'geolocation.csv')
 orders=ingestion(orders,'orders.csv')
-orderItems=ingestion(orderItems,'orderItems.csv')
+orderItems=ingestion(orderItems,'orderDetails.csv')
 payment=ingestion(payment,'payment.csv')
 productName=ingestion(productName,'productName.csv')
 product=ingestion(product,'product.csv')
 reviews=ingestion(reviews,'reviews.csv')
 sellers=ingestion(sellers,'sellers.csv')
+
+print(orderItems.info())

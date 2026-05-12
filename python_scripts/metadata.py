@@ -22,4 +22,4 @@ product=ingestion(product,'product.csv')
 reviews=ingestion(reviews,'reviews.csv')
 sellers=ingestion(sellers,'sellers.csv')
 
-print(orderItems.info())
+print(sellers.info())

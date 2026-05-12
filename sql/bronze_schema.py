@@ -15,9 +15,9 @@ def create_bronze_schema():
 def bronze_table_customer():
     with conn:
         try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS customers(
-                            cust_id VARCHAR(255),
-                            cust_unq_id VARCHAR(255) PRIMARY KEY,
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.customers(
+                            cust_id VARCHAR(255) PRIMARY KEY,
+                            cust_unq_id VARCHAR(255),
                             cust_zipcode INT,
                             cust_city VARCHAR(20),
                             cust_state VARCHAR(20),
@@ -28,15 +28,15 @@ def bronze_table_customer():
             print('bronze customer table created')
         except Exception as e:
             print('customer table not created ',e)
-            
+
 # Geolocation table
 def bronze_table_geolocation():
     with conn:
         try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS geolocation(
-                                geo_zipcode INT PRIMARY KEY,
-                                geo_lat DOUBLE,
-                                geo_lng DOUBLE,
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.geolocation(
+                                geo_zipcode INT,
+                                geo_lat DOUBLE PRECISION,
+                                geo_lng DOUBLE PRECISION,
                                 geo_city VARCHAR(20),
                                 geo_state VARCHAR(20),
                                 geoloation_timestamp TIMESTAMPTZ,
@@ -45,14 +45,14 @@ def bronze_table_geolocation():
             print('bronze geolocation table created')
         except Exception as e:
             print('bronze geolocation table not created ',e)
-            
+           
 # Orders table
 def bronze_table_orders():
     with conn:
         try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS orders(
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.orders(
                                 order_id VARCHAR(255) PRIMARY KEY,
-                                cust_id VARCHAR(255) REFERENCES customers(cust_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                cust_id VARCHAR(255) REFERENCES bronze.customers(cust_id) ON DELETE CASCADE ON UPDATE CASCADE,
                                 ord_status VARCHAR(30),
                                 purchase_timestamp TIMESTAMP,
                                 approved_at TIMESTAMP,
@@ -64,20 +64,20 @@ def bronze_table_orders():
                                 batch_id VARCHAR(255));''')
             print('bronze order table created')
         except Exception as e:
-            print('order table not created ',e)
+            print('order table not created ',e)        
 
 # OrderDetails table
 def bronze_table_orderdetails():
     with conn:
         try:
-            cursor.execute('''CREATE TABLE IF NOT EXISTS orddetails(
-                                order_id VARCHAR(255) REFERENCES orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.orddetails(
+                                order_id VARCHAR(255) REFERENCES bronze.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
                                 ord_itm_id INT,
-                                prod_id VARCHAR(255) REFERENCES prod(prod_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                                seller_id VARCHAR(255) REFERENCES seller(seller_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                prod_id VARCHAR(255) REFERENCES bronze.prod(prod_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                seller_id VARCHAR(255) REFERENCES bronze.sellers(seller_id) ON DELETE CASCADE ON UPDATE CASCADE,
                                 shipp_limit_date TIMESTAMP,
-                                price DOUBLE,
-                                freight_val DOUBLE,
+                                price DOUBLE PRECISION,
+                                freight_val DOUBLE PRECISION,
                                 orddetail_timestamp TIMESTAMP,
                                 source VARCHAR(20),
                                 batch_id VARCHAR(255));''')
@@ -85,3 +85,90 @@ def bronze_table_orderdetails():
         except Exception as e:
             print('orderdetails not created ',e)
 
+# Payment table
+def bronze_table_payment():
+    with conn:
+        try:
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.payment(
+                                order_id VARCHAR(255) REFERENCES bronze.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                payment_seq INT,
+                                payment_type VARCHAR(50),
+                                payment_installments INT,
+                                payment_value DOUBLE PRECISION,
+                                payment_timestamp TIMESTAMP,
+                                source VARCHAR(20),
+                                batch_id VARCHAR(255));''')
+            print('payment table created')
+        except Exception as e:
+            print('payment table not created ',e)
+
+# Product Name in English table
+def bronze_table_prodEng():
+    with conn:
+        try:
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.prodEng(
+                                prod_cat_name VARCHAR(255) PRIMARY KEY,
+                                prod_cat_name_eng VARCHAR(255),
+                                prod_timestamp TIMESTAMP,
+                                source VARCHAR(20),
+                                batch_id VARCHAR(255))''')
+            print('product name table created')
+        except Exception as e:
+            print('product name table not created ',e)
+            
+# Products table
+def bronze_table_prod():
+    with conn:
+        try:
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.prod(
+                                prod_id VARCHAR(255) PRIMARY KEY,
+                                prod_cat_name VARCHAR(255) REFERENCES bronze.prodEng(prod_cat_name) ON DELETE CASCADE ON UPDATE CASCADE,
+                                prod_name_len DOUBLE PRECISION,
+                                prod_desc_len DOUBLE PRECISION,
+                                prod_photos_qty DOUBLE PRECISION,
+                                prod_weight_g DOUBLE PRECISION,
+                                prod_length_cm DOUBLE PRECISION,
+                                prod_height_cm DOUBLE PRECISION,
+                                prod_width_cm DOUBLE PRECISION,
+                                prod_timestamp TIMESTAMP,
+                                source VARCHAR(20),
+                                batch_id VARCHAR(255))''')
+            print('prod table created')
+        except Exception as e:
+            print('prod table not created ',e)
+            
+# Reviews Table
+def bronze_table_reviews():
+    with conn:
+        try:
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.reviews(
+                                review_id VARCHAR(255) PRIMARY KEY,
+                                order_id VARCHAR(255) REFERENCES bronze.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                rev_score INT,
+                                rev_comment_title VARCHAR(255),
+                                rev_comment_message TEXT,
+                                rev_creation_date TIMESTAMP,
+                                rev_answer_timestamp TIMESTAMP,
+                                rev_timestamp TIMESTAMP,
+                                source VARCHAR(20),
+                                batch_id VARCHAR(255))''')
+            print('review table created')
+        except Exception as e:
+            print('review table not created ',e)
+
+# Sellers Table
+def bronze_table_sellers():
+    with conn:
+        try:
+            cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.sellers(
+                                seller_id VARCHAR(255) PRIMARY KEY,
+                                seller_zip_code INT,
+                                seller_city VARCHAR(20),
+                                seller_state VARCHAR(20),
+                                seller_timestamp TIMESTAMP,
+                                source VARCHAR(20),
+                                batch_id VARCHAR(255))''')
+            print('sellers table created')
+        except Exception as e:
+            print('sellers table not created ',e)
+            

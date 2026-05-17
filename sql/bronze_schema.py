@@ -19,11 +19,11 @@ def bronze_table_customer():
                             cust_id VARCHAR(255),
                             cust_unq_id VARCHAR(255),
                             cust_zipcode INT,
-                            cust_city VARCHAR(20),
-                            cust_state VARCHAR(20),
+                            cust_city VARCHAR(255),
+                            cust_state VARCHAR(255),
                             cust_name VARCHAR(255),
                             timestampp TIMESTAMPTZ,
-                            source VARCHAR(20),
+                            source VARCHAR(255),
                             batch_id VARCHAR(255));''')
             print('bronze customer table created')
         except Exception as e:
@@ -37,10 +37,10 @@ def bronze_table_geolocation():
                                 geo_zipcode INT,
                                 geo_lat DOUBLE PRECISION,
                                 geo_lng DOUBLE PRECISION,
-                                geo_city VARCHAR(20),
-                                geo_state VARCHAR(20),
+                                geo_city VARCHAR(255),
+                                geo_state VARCHAR(255),
                                 timestampp TIMESTAMPTZ,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255))''')
             print('bronze geolocation table created')
         except Exception as e:
@@ -60,7 +60,7 @@ def bronze_table_orders():
                                 delivered_customer_date TIMESTAMP,
                                 estimated_delivery_date TIMESTAMP,
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255));''')
             print('bronze order table created')
         except Exception as e:
@@ -72,14 +72,14 @@ def bronze_table_orderdetails():
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.orddetails(
                                 order_id VARCHAR(255),
-                                ord_itm_id INT,
+                                order_item_id INT,
                                 prod_id VARCHAR(255),
                                 seller_id VARCHAR(255),
                                 shipp_limit_date TIMESTAMP,
                                 price DOUBLE PRECISION,
                                 freight_val DOUBLE PRECISION,
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255));''')
             print('orderdetails table got created')
         except Exception as e:
@@ -96,7 +96,7 @@ def bronze_table_payment():
                                 payment_installments INT,
                                 payment_value DOUBLE PRECISION,
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255));''')
             print('payment table created')
         except Exception as e:
@@ -110,7 +110,7 @@ def bronze_table_prodEng():
                                 prod_cat_name VARCHAR(255) ,
                                 prod_cat_name_eng VARCHAR(255),
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255))''')
             print('product name table created')
         except Exception as e:
@@ -131,7 +131,7 @@ def bronze_table_prod():
                                 prod_height_cm DOUBLE PRECISION,
                                 prod_width_cm DOUBLE PRECISION,
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255))''')
             print('prod table created')
         except Exception as e:
@@ -150,7 +150,7 @@ def bronze_table_reviews():
                                 rev_creation_date TIMESTAMP,
                                 rev_answer_timestamp TIMESTAMP,
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255))''')
             print('review table created')
         except Exception as e:
@@ -163,10 +163,10 @@ def bronze_table_sellers():
             cursor.execute('''CREATE TABLE IF NOT EXISTS bronze.sellers(
                                 seller_id VARCHAR(255) ,
                                 seller_zipcode INT,
-                                seller_city VARCHAR(20),
-                                seller_state VARCHAR(20),
+                                seller_city VARCHAR(255),
+                                seller_state VARCHAR(255),
                                 timestampp TIMESTAMP,
-                                source VARCHAR(20),
+                                source VARCHAR(255),
                                 batch_id VARCHAR(255))''')
             print('sellers table created')
         except Exception as e:

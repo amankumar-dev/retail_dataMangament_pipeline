@@ -4,7 +4,7 @@ import pandas as pd
 
 customers=pd.read_csv('datasets/raw/customers.csv')
 geolocation=pd.read_csv('datasets/raw/geolocation.csv')
-orderItems=pd.read_csv('datasets/raw/orderDetails.csv')
+orderDetails=pd.read_csv('datasets/raw/orderDetails.csv')
 orders=pd.read_csv('datasets/raw/orders.csv')
 payment=pd.read_csv('datasets/raw/payment.csv')
 productName=pd.read_csv('datasets/raw/productNameEng.csv')

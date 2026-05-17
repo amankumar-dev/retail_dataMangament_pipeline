@@ -30,19 +30,104 @@ def insert_bronze_customer(df,tableName):
                 query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
                 data=result[2]
                 cursor.executemany(query,data)      # Executing multiple query
-                print('customer data inserted')
+                print(f'{tableName} data inserted')
             except Exception as e:
-                print('customer data not inserted ',e)
+                print(f'{tableName} data not inserted ',e)
                 
-def insert_bronze_geolocation(df):
-    if(truncate_bronze_data('geolocation')):
+def insert_bronze_geolocation(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
         with conn:
             try:
                 result=dynamic_cols(df)
-                query=f'INSERT INTO bronze.geolocation({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
                 data=result[2]
                 cursor.executemany(query,data)      # Executing multiple query
-                print('customer data inserted')
+                print(f'{tableName} data inserted')
             except Exception as e:
-                print('customer data not inserted ',e)
+                print(f'{tableName} data not inserted ',e)
                 
+def insert_bronze_orderDetails(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_orders(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_payment(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_prodEng(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_prod(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_reviews(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+def insert_bronze_sellers(df,tableName):
+    if(truncate_bronze_data(f'{tableName}')):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO bronze.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                print(f'{tableName} data not inserted ',e)
+                
+

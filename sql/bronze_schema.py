@@ -1,4 +1,4 @@
-from connection import conn,cursor
+from sql.connection import conn,cursor
 
 # Create bronze schema
 def create_bronze_schema():

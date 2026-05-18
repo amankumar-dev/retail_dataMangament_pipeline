@@ -6,24 +6,19 @@ import uuid
 # Creating batch Id
 batch_id = str(uuid.uuid4())
 
-# Using ingestion to add metadata
-customers=ingestion(customers,'customer.csv',batch_id)
-geolocation=ingestion(geolocation,'geolocation.csv',batch_id)
-orders=ingestion(orders,'orders.csv',batch_id)
-orderDetails=ingestion(orderDetails,'orderDetails.csv',batch_id)
-payment=ingestion(payment,'payment.csv',batch_id)
-productName=ingestion(productName,'productName.csv',batch_id)
-product=ingestion(product,'product.csv',batch_id)
-reviews=ingestion(reviews,'reviews.csv',batch_id)
-sellers=ingestion(sellers,'sellers.csv',batch_id)
+# Creating datasets to make code clean
+datasets=[
+    (customers,'customer.csv',insert_bronze_customer,'customers')
+    (geolocation,'geolocation.csv',insert_bronze_geolocation,'geolocation')
+    (orderDetails,'orderDetails.csv',insert_bronze_orderDetails,'orddetails')
+    (orders,'orders.csv',insert_bronze_orders,'orders')
+    (payment,'payment.csv',insert_bronze_payment,'payment')
+    (productName,'productNameEng.csv',insert_bronze_prodEng,'prodeng')
+    (product,'products.csv',insert_bronze_prod,'prod')
+    (reviews,'reviews.csv',insert_bronze_reviews,'reviews')
+    (sellers,'sellers.csv',insert_bronze_sellers,'sellers')
+]
 
-# Inserting value into bronze schema
-#insert_bronze_customer(customers,'customers')
-#insert_bronze_geolocation(geolocation,'geolocation')
-#insert_bronze_orderDetails(orderDetails,'orddetails')
-#insert_bronze_orders(orders,'orders')
-#insert_bronze_payment(payment,'payment')
-#insert_bronze_prodEng(productName,'prodeng')
-#insert_bronze_prod(product,'prod')
-#insert_bronze_reviews(reviews,'reviews')
-insert_bronze_sellers(sellers,'sellers')
+for df,source,load_fun,table in datasets:
+    df=ingestion(df,source,batch_id)
+    load_fun(df,table)

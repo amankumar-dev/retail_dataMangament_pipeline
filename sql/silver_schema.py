@@ -15,8 +15,9 @@ def silver_table_customer():
     with conn:
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.customers(
-                            cust_id VARCHAR(255) PRIMARY KEY,
-                            cust_unq_id VARCHAR(255) UNIQUE,
+                            cust_sk SERIAL PRIMARY KEY,
+                            cust_id VARCHAR(255),
+                            cust_unq_id UUID UNIQUE,
                             cust_zipcode INT,
                             cust_city VARCHAR(255),
                             cust_state VARCHAR(255),
@@ -53,7 +54,8 @@ def silver_table_orders():
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.orders(
                                 order_id VARCHAR(255) PRIMARY KEY,
-                                cust_id VARCHAR(255) REFERENCES silver.customers(cust_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                cust_sk INT REFERENCES silver.customers(cust_sk) ON DELETE CASCADE ON UPDATE CASCADE,
+                                cust_id VARCHAR(255),
                                 ord_status VARCHAR(30),
                                 purchase_timestamp TIMESTAMP,
                                 approved_at TIMESTAMP,

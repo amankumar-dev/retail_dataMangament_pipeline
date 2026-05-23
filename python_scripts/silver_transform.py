@@ -1,7 +1,7 @@
 # For transforming the raw data
 import pandas as pd
 import numpy as np
-from python_scripts.silver_pipeline import customers,geolocation,orddetails
+from python_scripts.silver_pipeline import customers,geolocation,orddetails,orders
 import uuid
 
 # For customers transformation
@@ -49,4 +49,36 @@ def geolocation_data(df):
 
 # For order details transformation
 def orderDetails_data(df):
-    pass
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
+        
+    # Handle null
+    df['order_id']=df['order_id'].fillna('NA')
+    df['prod_id']=df['prod_id'].fillna('NA')
+    
+    print(df.isna().sum())
+    print(df.dtypes)
+    
+# For order transformation
+def orders_data(df):
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
+            
+    # Hanle nulls
+    df['order_id']=df['order_id'].fillna('NA')
+    df['cust_id']=df['cust_id'].fillna('NA')
+    
+    print(df.isna().sum())
+orders_data(orders)

@@ -53,7 +53,8 @@ def silver_table_orders():
     with conn:
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.orders(
-                                order_id VARCHAR(255) PRIMARY KEY,
+                                order_sk SERIAL PRIMARY KEY,
+                                order_id VARCHAR(255),
                                 cust_sk INT REFERENCES silver.customers(cust_sk) ON DELETE CASCADE ON UPDATE CASCADE,
                                 cust_id VARCHAR(255),
                                 ord_status VARCHAR(30),
@@ -75,10 +76,13 @@ def silver_table_orderdetails():
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.orddetails(
                                 orddetail_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                                order_id VARCHAR(255) REFERENCES silver.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                order_sk INT REFERENCES silver.orders(order_sk) ON DELETE CASCADE ON UPDATE CASCADE,
+                                order_id VARCHAR(255),
                                 order_item_id INT,
-                                prod_id VARCHAR(255) REFERENCES silver.prod(prod_id) ON DELETE CASCADE ON UPDATE CASCADE,
-                                seller_id VARCHAR(255) REFERENCES silver.sellers(seller_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                prod_sk INT REFERENCES silver.prod(prod_sk) ON DELETE CASCADE ON UPDATE CASCADE,
+                                prod_id VARCHAR(255),
+                                seller_sk INT REFERENCES silver.sellers(seller_sk) ON DELETE CASCADE ON UPDATE CASCADE,
+                                seller_id VARCHAR(255),
                                 shipp_limit_date TIMESTAMP,
                                 price NUMERIC(10,2),
                                 freight_val NUMERIC(10,2),

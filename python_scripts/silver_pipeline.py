@@ -4,7 +4,7 @@ from python_scripts.extract_bronze import extract_bronze_data
 customers=extract_bronze_data('customers')
 geolocation=extract_bronze_data('geolocation')
 orddetails=extract_bronze_data('orddetails')
-#orders=extract_bronze_data('orders')
+orders=extract_bronze_data('orders')
 #payment=extract_bronze_data('payment')
 #productName=extract_bronze_data('prodEng')
 #products=extract_bronze_data('prod')

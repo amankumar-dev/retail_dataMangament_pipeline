@@ -1,7 +1,7 @@
 # For transforming the raw data
 import pandas as pd
 import numpy as np
-from python_scripts.silver_pipeline import customers,geolocation,orddetails,orders
+from python_scripts.silver_pipeline import products
 import uuid
 
 # For customers transformation
@@ -28,6 +28,9 @@ def customers_data(df):
     # Drop full empty row
     df=df.dropna(how='all')
     
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
     return df
 
 # For geolocation transformation
@@ -46,6 +49,9 @@ def geolocation_data(df):
             
     # Handle null value
     df[['geo_city','geo_state']]=df[['geo_city','geo_state']].fillna('NA')
+    
+    # Drop duplcated value
+    df=df.drop_duplicates()
 
 # For order details transformation
 def orderDetails_data(df):
@@ -62,9 +68,9 @@ def orderDetails_data(df):
     df['order_id']=df['order_id'].fillna('NA')
     df['prod_id']=df['prod_id'].fillna('NA')
     
-    print(df.isna().sum())
-    print(df.dtypes)
-    
+    # Drop duplcated value
+    df=df.drop_duplicates()
+     
 # For order transformation
 def orders_data(df):
     columns=df.columns
@@ -79,6 +85,76 @@ def orders_data(df):
     # Hanle nulls
     df['order_id']=df['order_id'].fillna('NA')
     df['cust_id']=df['cust_id'].fillna('NA')
+    approved_mask=df['approved_at'].isna()
+    df.loc[approved_mask,'approved_at']=(df.loc[approved_mask,'purchase_timestamp']+pd.Timedelta(minutes=15))
+    carrier_mask=df['delivered_carrier_date'].isna()
+    df.loc[carrier_mask,'delivered_carrier_date']=(df.loc[carrier_mask,'approved_at']+pd.Timedelta(days=2))
+    delivery_mask=df['delivered_customer_date'].isna()
+    df.loc[delivery_mask,'delivered_customer_date']=(df.loc[delivery_mask,'delivered_carrier_date']+pd.Timedelta(days=4))
     
+    # Business rule implementation
+    mask=(df['approved_at']>df['delivered_carrier_date'])
+    df.loc[mask,'delivered_carrier_date']=(df.loc[mask,'approved_at']+pd.Timedelta(days=2))
+    mask=(df['delivered_carrier_date']>df['delivered_customer_date'])
+    df.loc[mask,'delivered_customer_date']=(df.loc[mask,'delivered_carrier_date']+pd.Timedelta(days=2))
+    
+    # Handle wrong status value availability
+    shipMask=(df['ord_status']=='shipped')
+    df.loc[shipMask,'delivered_customer_date']=pd.NaT
+    canMask=(df['ord_status']=='canceled')
+    df.loc[canMask,'delivered_customer_date']=pd.NaT
+    df.loc[canMask,'estimated_delivery_date']=pd.NaT
+    invMask=(df['ord_status']=='invoiced')
+    df.loc[invMask,'delivered_customer_date']=pd.NaT
+    df.loc[invMask,'delivered_carrier_date']=pd.NaT
+    df.loc[invMask,'estimated_delivery_date']=pd.NaT
+    
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
+# For payment transformation
+def payment_data(df):
+    columns=df.columns
+
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
+    
+    # Handling null value
+    df['payment_type']=df['payment_type'].fillna('voucher')
+    
+    # Drop duplcated value
+    df=df.drop_duplicates()
+
+# For product name transformation
+def prodName_data(df):
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
+# For product transformatin
+def prod_data(df):
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
+            
+    print(df.dtypes)
     print(df.isna().sum())
-orders_data(orders)
+    
+prod_data(products)

@@ -1,7 +1,7 @@
 # For transforming the raw data
 import pandas as pd
 import numpy as np
-from python_scripts.silver_pipeline import products
+from python_scripts.silver_pipeline import sellers
 import uuid
 
 # For customers transformation
@@ -52,6 +52,8 @@ def geolocation_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    
+    return df
 
 # For order details transformation
 def orderDetails_data(df):
@@ -70,6 +72,8 @@ def orderDetails_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    
+    return df
      
 # For order transformation
 def orders_data(df):
@@ -112,6 +116,8 @@ def orders_data(df):
     # Drop duplcated value
     df=df.drop_duplicates()
     
+    return df
+    
 # For payment transformation
 def payment_data(df):
     columns=df.columns
@@ -128,6 +134,8 @@ def payment_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    
+    return df
 
 # For product name transformation
 def prodName_data(df):
@@ -143,7 +151,9 @@ def prodName_data(df):
     # Drop duplcated value
     df=df.drop_duplicates()
     
-# For product transformatin
+    return df
+
+# For product transformation
 def prod_data(df):
     columns=df.columns
     
@@ -152,9 +162,43 @@ def prod_data(df):
         df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
-            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
-            
-    print(df.dtypes)
-    print(df.isna().sum())
+            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
     
-prod_data(products)
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
+    return df
+
+# For review transformation
+def review_data(df):
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
+    return df
+  
+# For seller transformation
+def seller_data(df):
+    columns=df.columns
+    
+    # Convert string nan into numpy nan
+    for cols in columns:
+        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
+        # Standarize value
+        if(pd.api.types.is_string_dtype(df[f'{cols}'])):
+            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+    
+    # Drop duplcated value
+    df=df.drop_duplicates()
+    
+    return df
+
+

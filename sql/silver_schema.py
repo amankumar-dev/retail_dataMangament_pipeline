@@ -100,7 +100,7 @@ def silver_table_payment():
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.payment(
                                 payment_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                                 order_sk INT REFERENCES silver.orders(order_sk) ON DELETE CASCADE ON UPDATE CASCADE,
-                                order_id VARCHAR(255)
+                                order_id VARCHAR(255),
                                 payment_seq INT,
                                 payment_type VARCHAR(50),
                                 payment_installments INT,
@@ -133,7 +133,7 @@ def silver_table_prod():
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.prod(
                                 prod_sk SERIAL PRIMARY KEY,
-                                prod_id VARCHAR(255,
+                                prod_id VARCHAR(255),
                                 prod_cat_name VARCHAR(255) REFERENCES silver.prodeng(prod_cat_name) ON DELETE CASCADE ON UPDATE CASCADE,
                                 prod_name_len NUMERIC(10,2),
                                 prod_desc_len NUMERIC(10,2),
@@ -154,8 +154,10 @@ def silver_table_reviews():
     with conn:
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.reviews(
-                                review_id VARCHAR(255) PRIMARY KEY,
-                                order_id VARCHAR(255) REFERENCES silver.orders(order_id) ON DELETE CASCADE ON UPDATE CASCADE,
+                                review_sk SERIAL PRIMARY KEY,
+                                review_id VARCHAR(255),
+                                order_sk INT REFERENCES silver.orders(order_sk) ON DELETE CASCADE ON UPDATE CASCADE,
+                                order_id VARCHAR(255),
                                 rev_score INT,
                                 rev_comment_title VARCHAR(255),
                                 rev_comment_message TEXT,
@@ -173,7 +175,8 @@ def silver_table_sellers():
     with conn:
         try:
             cursor.execute('''CREATE TABLE IF NOT EXISTS silver.sellers(
-                                seller_id VARCHAR(255) PRIMARY KEY,
+                                seller_sk SERIAL PRIMARY KEY,
+                                seller_id VARCHAR(255),
                                 seller_zipcode INT,
                                 seller_city VARCHAR(255),
                                 seller_state VARCHAR(255),

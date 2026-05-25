@@ -172,3 +172,13 @@ def bronze_table_sellers():
         except Exception as e:
             print('sellers table not created ',e)
 
+create_bronze_schema()
+bronze_table_customer()
+bronze_table_sellers()
+bronze_table_prodEng()
+bronze_table_prod()
+bronze_table_geolocation()
+bronze_table_orders()
+bronze_table_orderdetails()
+bronze_table_payment()
+bronze_table_reviews()

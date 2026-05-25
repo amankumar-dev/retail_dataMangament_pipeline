@@ -1,26 +1,33 @@
 # For transforming the raw data
 import pandas as pd
 import numpy as np
-from python_scripts.silver_pipeline import sellers
 import uuid
 
 # For customers transformation
 def customers_data(df):
+    # Convert string NaN into numpy NaN    
+    df = df.replace(r'^\s*(nan|na)?\s*$',
+        np.nan,
+        regex=True
+    )    
+    
     columns=df.columns
+    
     for cols in columns:
-        # Convert string NaN into numpy NaN    
-       df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
-       
        # Standarize text
-       if cols not in ['cust_zipcode','timestampp']:
-           df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
+       if cols not in ['cust_zipcode', 'timestampp']:
+
+            mask = df[cols].notna()
+
+            df.loc[mask, cols] = (
+                df.loc[mask, cols]
+                .str.lower()
+                .str.strip()
+            )
     
     #Handle null for customer unique id
     mask=df['cust_unq_id'].isna()
     df.loc[mask,'cust_unq_id']=[str(uuid.uuid4()) for _ in range(mask.sum())]
-    
-    #Handle null for customer id
-    df['cust_id']=df['cust_id'].fillna('NA')
     
     # Fix datatypes
     df['cust_zipcode']=df['cust_zipcode'].astype(str).str.strip()
@@ -30,18 +37,22 @@ def customers_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    df=df.drop_duplicates(subset=['cust_unq_id'])
     
     return df
 
 # For geolocation transformation
 def geolocation_data(df):
+    # Convert string NaN into numpy NaN           
+    df = df.replace(r'^\s*(nan|na)?\s*$',
+        np.nan,
+        regex=True
+    )   
+    
     columns=df.columns
     
     # Convert string NaN into numpy NaN
     for cols in columns:
-        # Convert string NaN into numpy NaN    
-        df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
-       
        # Standarize text
         if cols not in ['timestampp']:
             df[f'{cols}']=df[f'{cols}'].astype(str)
@@ -50,8 +61,13 @@ def geolocation_data(df):
     # Handle null value
     df[['geo_city','geo_state']]=df[['geo_city','geo_state']].fillna('NA')
     
+    # Standarize value
+    df['geo_lat'] = df['geo_lat'].round(4)
+    df['geo_lng'] = df['geo_lng'].round(4)
+    
     # Drop duplcated value
     df=df.drop_duplicates()
+    df=df.drop_duplicates(subset=['geo_zipcode','geo_lat','geo_lng'])
     
     return df
 
@@ -162,7 +178,7 @@ def prod_data(df):
         df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
-            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
     
     # Drop duplcated value
     df=df.drop_duplicates()

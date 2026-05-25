@@ -1,7 +1,6 @@
 # Here we will insert all the data into bronze table
 from sql.connection import conn,cursor
 
-# Insert into bronze tables
 # For removing old data
 def truncate_bronze_data(tableName):
     with conn:
@@ -21,6 +20,7 @@ def dynamic_cols(df):
     data=[tuple(row) for row in df.to_numpy()]      # Converting df row into list of tuple
     return [col_name,placeholders,data]
 
+# Insert into bronze tables
 # For customer
 def insert_bronze_customer(df,tableName):
     if(truncate_bronze_data(tableName)):

@@ -8,14 +8,14 @@ batch_id = str(uuid.uuid4())
 
 # Creating datasets to make code clean
 datasets=[
-    (customers,'customer.csv',insert_bronze_customer,'customers')
-    (geolocation,'geolocation.csv',insert_bronze_geolocation,'geolocation')
-    (orderDetails,'orderDetails.csv',insert_bronze_orderDetails,'orddetails')
-    (orders,'orders.csv',insert_bronze_orders,'orders')
-    (payment,'payment.csv',insert_bronze_payment,'payment')
-    (productName,'productNameEng.csv',insert_bronze_prodEng,'prodeng')
-    (product,'products.csv',insert_bronze_prod,'prod')
-    (reviews,'reviews.csv',insert_bronze_reviews,'reviews')
+    (customers,'customer.csv',insert_bronze_customer,'customers'),
+    (geolocation,'geolocation.csv',insert_bronze_geolocation,'geolocation'),
+    (orderDetails,'orderDetails.csv',insert_bronze_orderDetails,'orddetails'),
+    (orders,'orders.csv',insert_bronze_orders,'orders'),
+    (payment,'payment.csv',insert_bronze_payment,'payment'),
+    (productName,'productNameEng.csv',insert_bronze_prodEng,'prodeng'),
+    (product,'products.csv',insert_bronze_prod,'prod'),
+    (reviews,'reviews.csv',insert_bronze_reviews,'reviews'),
     (sellers,'sellers.csv',insert_bronze_sellers,'sellers')
 ]
 

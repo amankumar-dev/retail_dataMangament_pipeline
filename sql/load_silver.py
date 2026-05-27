@@ -99,3 +99,16 @@ def insert_silver_prod(df,tableName):
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)
+                
+# For orders
+def insert_silver_orders(df,tableName):
+    if(truncate_silver_data(tableName)):
+        with conn:
+            try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO silver.{tableName}({result[0]}) VALUES({result[1]});'
+                data=result[2]
+                cursor.executemany(query,data)
+                print(f'{tableName} data inserted')
+            except Exception as e:
+                 print(f'{tableName} data not inserted ',e)

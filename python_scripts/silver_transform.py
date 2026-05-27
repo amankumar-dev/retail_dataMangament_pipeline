@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 import uuid
+from sql.connection import conn
 
 # For customers transformation
 def customers_data(df):
@@ -131,6 +132,20 @@ def orders_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    
+    # cust_sk mapping
+    cust_df = pd.read_sql(
+        '''
+        SELECT cust_id, cust_sk
+        FROM silver.customers
+        ''',
+        conn
+    )
+    df = df.merge(
+        cust_df,
+        on='cust_id',
+        how='left'
+    )
     
     return df
     

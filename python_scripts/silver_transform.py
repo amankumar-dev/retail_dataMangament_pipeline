@@ -87,6 +87,37 @@ def orderDetails_data(df):
     df['order_id']=df['order_id'].fillna('NA')
     df['prod_id']=df['prod_id'].fillna('NA')
     
+    # For order_sk mapping
+    ord_df=pd.read_sql('''SELECT order_id,order_sk
+                            FROM silver.orders;''',conn)
+    df=df.merge(
+        ord_df,
+        how='left',
+        on='order_id'
+    )
+    
+    # For prod_sk mapping
+    prod_df=pd.read_sql('''SELECT prod_id,prod_sk
+                            FROM silver.prod;''',conn)
+    df=df.merge(
+        prod_df,
+        on='prod_id',
+        how='left'
+    )
+    
+    # For seller_sk mapping
+    seller_df=pd.read_sql('''SELECT seller_id,seller_sk
+                                FROM silver.sellers;''',conn)
+    df=df.merge(
+        seller_df,
+        on='seller_id',
+        how='left'
+    )
+    
+    df['order_sk'] = df['order_sk'].astype('Int64')
+    df['prod_sk'] = df['prod_sk'].astype('Int64')
+    df['seller_sk'] = df['seller_sk'].astype('Int64')
+    
     # Drop duplcated value
     df=df.drop_duplicates()
     
@@ -163,6 +194,15 @@ def payment_data(df):
     # Handling null value
     df['payment_type']=df['payment_type'].fillna('voucher')
     
+    # For order_sk mapping
+    ord_df=pd.read_sql('''SELECT order_id,order_sk
+                            FROM silver.orders;''',conn)
+    df=df.merge(
+        ord_df,
+        how='left',
+        on='order_id'
+    )
+    
     # Drop duplcated value
     df=df.drop_duplicates()
     
@@ -210,7 +250,16 @@ def review_data(df):
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
             df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
-            
+
+    # For order_sk mapping
+    ord_df=pd.read_sql('''SELECT order_id,order_sk
+                            FROM silver.orders;''',conn)
+    df=df.merge(
+        ord_df,
+        how='left',
+        on='order_id'
+    )
+    
     # Drop duplcated value
     df=df.drop_duplicates()
     

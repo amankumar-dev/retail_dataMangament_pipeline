@@ -1,39 +1,30 @@
 from python_scripts.extract_bronze import extract_bronze_data
 from sql.load_silver import insert_silver_customer,insert_silver_geolocation,insert_silver_orddetails,insert_silver_sellers,insert_silver_prodEng,insert_silver_prod,insert_silver_orders,insert_silver_sellers,insert_silver_orddetails,insert_silver_payment,insert_silver_reviews
 from python_scripts.silver_transform import customers_data,geolocation_data,orderDetails_data,orders_data,seller_data,review_data,prod_data,prodName_data,payment_data
-import numpy as np
 
-# Fetching data from bronze schema
-#customers=extract_bronze_data('customers')
-#geolocation=extract_bronze_data('geolocation')
-#orddetails=extract_bronze_data('orddetails')
-#orders=extract_bronze_data('orders')
-#payment=extract_bronze_data('payment')
-#prodEng=extract_bronze_data('prodEng')
-#products=extract_bronze_data('prod')
-reviews=extract_bronze_data('reviews')
-#sellers=extract_bronze_data('sellers')
+# Creating datasets to make code clean
+datasets = [
+    ('customers',customers_data,insert_silver_customer),
+    ('geolocation',geolocation_data,insert_silver_geolocation),
+    ('orddetails',orderDetails_data,insert_silver_orddetails),
+    ('orders',orders_data,insert_silver_orders),
+    ('payment',payment_data,insert_silver_payment),
+    ('prodEng',prodName_data,insert_silver_prodEng),
+    ('prod',prod_data,insert_silver_prod),
+    ('reviews',review_data,insert_silver_reviews),
+    ('sellers',seller_data,insert_silver_sellers)
+]
 
-# Df transformation
-#customers=customers_data(customers)
-#geolocation=geolocation_data(geolocation)
-#orddetails=orderDetails_data(orddetails)
-#print(orddetails.iloc[20])
-#sellers=seller_data(sellers)
-#prodEng=prodName_data(prodEng)
-#products=prod_data(products)
-#orders=orders_data(orders)
-#payment=payment_data(payment)
-reviews=review_data(reviews)
+# ETL Process
+for table, transform_fun, load_fun in datasets:
 
-# Load data in silver schema
-#insert_silver_customer(customers,'customers')
-#insert_silver_geolocation(geolocation,'geolocation')
-#insert_silver_sellers(sellers,'sellers')
-#insert_silver_prodEng(prodEng,'prodEng')
-#insert_silver_prod(products,'prod')
-#insert_silver_orders(orders,'orders')
-#insert_silver_sellers(sellers,'sellers')
-#insert_silver_orddetails(orddetails,'orddetails')
-#insert_silver_payment(payment,'payment')
-insert_silver_reviews(reviews,'reviews')
+    # Extract
+    df = extract_bronze_data(table)
+
+    # Transform
+    df = transform_fun(df)
+
+    # Load
+    load_fun(df, table)
+
+    print(f'{table} loaded successfully')

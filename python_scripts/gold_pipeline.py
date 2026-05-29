@@ -4,22 +4,21 @@ from sql.load_gold import insert_dim_customer,insert_dim_date,insert_dim_locatio
 # Creating datasets to make code clean
 datasets = [
     ('customers','dim_cust',insert_dim_customer),
-    ('geolocation','dim_location',insert_dim_location),
-    ('sellers','dim_seller',insert_dim_seller),
-    ('prodeng','dim_prodeng',insert_dim_prodeng),
-    ('prod','dim_prod',insert_dim_prod),
-    ('orders','dim_date',insert_dim_date),
-    ('geolocation','dim_location',insert_dim_location)
+    #('geolocation','dim_location',insert_dim_location),
+    #('sellers','dim_seller',insert_dim_seller),
+    #('prodeng','dim_prodeng',insert_dim_prodeng),
+    #('prod','dim_prod',insert_dim_prod),
+    #('orders','dim_date',insert_dim_date)
 ]
 
 # ETL Process
-for exTable,table, load_fun in datasets:
+for exTable,table,transform_fun,load_fun in datasets:
 
     # Extract
     df = extract_silver_data(exTable)
 
     # Transform
-    #df = transform_fun(df)
+    df = transform_fun(df)
 
     # Load
     load_fun(table,df)

@@ -4,16 +4,20 @@ from python_scripts.silver_transform import customers_data,geolocation_data,orde
 
 # Creating datasets to make code clean
 datasets = [
-    ('customers',customers_data,insert_silver_customer),
-    ('geolocation',geolocation_data,insert_silver_geolocation),
-    ('orddetails',orderDetails_data,insert_silver_orddetails),
-    ('orders',orders_data,insert_silver_orders),
-    ('payment',payment_data,insert_silver_payment),
     ('prodEng',prodName_data,insert_silver_prodEng),
+    ('geolocation',geolocation_data,insert_silver_geolocation),
+    ('customers',customers_data,insert_silver_customer),
+    ('sellers',seller_data,insert_silver_sellers),
     ('prod',prod_data,insert_silver_prod),
+    ('orders',orders_data,insert_silver_orders),
+    ('orddetails',orderDetails_data,insert_silver_orddetails)
     ('reviews',review_data,insert_silver_reviews),
-    ('sellers',seller_data,insert_silver_sellers)
+    ('payment',payment_data,insert_silver_payment)
 ]
+
+#df=extract_bronze_data('reviews')
+#review_data(df)
+
 
 # ETL Process
 for table, transform_fun, load_fun in datasets:

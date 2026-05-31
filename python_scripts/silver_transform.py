@@ -39,6 +39,7 @@ def customers_data(df):
     # Drop duplcated value
     df=df.drop_duplicates()
     df=df.drop_duplicates(subset=['cust_unq_id'])
+    df=df.drop_duplicates(subset=['cust_id'])
     
     return df
 
@@ -58,9 +59,6 @@ def geolocation_data(df):
         if cols not in ['timestampp']:
             df[f'{cols}']=df[f'{cols}'].astype(str)
             df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
-            
-    # Handle null value
-    df[['geo_city','geo_state']]=df[['geo_city','geo_state']].fillna('NA')
     
     # Standarize value
     df['geo_lat'] = df['geo_lat'].round(4)
@@ -83,10 +81,6 @@ def orderDetails_data(df):
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
             df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
         
-    # Handle null
-    df['order_id']=df['order_id'].fillna('NA')
-    df['prod_id']=df['prod_id'].fillna('NA')
-    
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
@@ -133,10 +127,8 @@ def orders_data(df):
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
             df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
-            
-    # Hanle nulls
-    df['order_id']=df['order_id'].fillna('NA')
-    df['cust_id']=df['cust_id'].fillna('NA')
+    
+    # Handle null    
     approved_mask=df['approved_at'].isna()
     df.loc[approved_mask,'approved_at']=(df.loc[approved_mask,'purchase_timestamp']+pd.Timedelta(minutes=15))
     carrier_mask=df['delivered_carrier_date'].isna()
@@ -163,6 +155,8 @@ def orders_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
+    mask=df['order_id'].duplicated()
+    df.loc[mask,'order_id']=None
     
     # cust_sk mapping
     cust_df = pd.read_sql(
@@ -197,6 +191,9 @@ def payment_data(df):
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
+    mask=ord_df['order_id'].duplicated()
+    ord_df.loc[mask,'order_id']=None
+    
     df=df.merge(
         ord_df,
         how='left',
@@ -217,7 +214,7 @@ def prodName_data(df):
         df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
-            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
             
     # Drop duplcated value
     df=df.drop_duplicates()
@@ -237,7 +234,8 @@ def prod_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
-    
+    mask=df['prod_id'].duplicated()
+    df.loc[mask,'prod_id']=None
     return df
 
 # For review transformation
@@ -249,11 +247,18 @@ def review_data(df):
         df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
-            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
 
+    # Handle duplicates
+    mask=df['review_id'].duplicated()
+    df.loc[mask,'review_id']=None
+    
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
+    mask=ord_df['order_id'].duplicated()
+    ord_df.loc[mask,'order_id']=None
+    
     df=df.merge(
         ord_df,
         how='left',
@@ -274,11 +279,12 @@ def seller_data(df):
         df[f'{cols}']=df[f'{cols}'].replace('NaN',np.nan)
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
-            df[f'{cols}']=df[f'{cols}'].fillna('NA').str.lower().str.strip()
+            df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
     
     # Drop duplcated value
     df=df.drop_duplicates()
-    
+    mask=df['seller_id'].duplicated()
+    df.loc[mask,'seller_id']=None
     return df
 
 

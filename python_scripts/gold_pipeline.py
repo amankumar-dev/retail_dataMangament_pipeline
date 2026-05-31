@@ -8,7 +8,7 @@ datasets = [
     #('sellers','dim_seller',insert_dim_seller),
     #('prodeng','dim_prodeng',insert_dim_prodeng),
     #('prod','dim_prod',insert_dim_prod),
-    #('orders','dim_date',insert_dim_date)
+    #('orddetails','dim_date',insert_dim_date)
 ]
 
 # ETL Process

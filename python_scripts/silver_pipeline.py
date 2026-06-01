@@ -15,10 +15,6 @@ datasets = [
     ('payment',payment_data,insert_silver_payment)
 ]
 
-#df=extract_bronze_data('reviews')
-#review_data(df)
-
-
 # ETL Process
 for table, transform_fun, load_fun in datasets:
 

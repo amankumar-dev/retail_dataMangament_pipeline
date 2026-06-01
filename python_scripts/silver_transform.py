@@ -80,28 +80,35 @@ def orderDetails_data(df):
         # Standarize value
         if(pd.api.types.is_string_dtype(df[f'{cols}'])):
             df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
-        
+    
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
+    
+    # For prod_sk mapping
+    prod_df=pd.read_sql('''SELECT prod_id,prod_sk
+                            FROM silver.prod;''',conn)
+    
+    # For seller_sk mapping
+    seller_df=pd.read_sql('''SELECT seller_id,seller_sk
+                                FROM silver.sellers;''',conn)
+    
+    ord_df = ord_df.dropna(subset=['order_id']).drop_duplicates(subset=['order_id'])
+    prod_df = prod_df.dropna(subset=['prod_id']).drop_duplicates(subset=['prod_id'])
+    seller_df = seller_df.dropna(subset=['seller_id']).drop_duplicates(subset=['seller_id'])
+    
     df=df.merge(
         ord_df,
         how='left',
         on='order_id'
     )
     
-    # For prod_sk mapping
-    prod_df=pd.read_sql('''SELECT prod_id,prod_sk
-                            FROM silver.prod;''',conn)
     df=df.merge(
         prod_df,
         on='prod_id',
         how='left'
     )
     
-    # For seller_sk mapping
-    seller_df=pd.read_sql('''SELECT seller_id,seller_sk
-                                FROM silver.sellers;''',conn)
     df=df.merge(
         seller_df,
         on='seller_id',
@@ -155,8 +162,7 @@ def orders_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
-    mask=df['order_id'].duplicated()
-    df.loc[mask,'order_id']=None
+    df=df.dropna(subset=['order_id']).drop_duplicates(subset=['order_id'])
     
     # cust_sk mapping
     cust_df = pd.read_sql(
@@ -234,8 +240,7 @@ def prod_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
-    mask=df['prod_id'].duplicated()
-    df.loc[mask,'prod_id']=None
+    df = df.drop_duplicates(subset=['prod_id'])
     return df
 
 # For review transformation
@@ -283,8 +288,72 @@ def seller_data(df):
     
     # Drop duplcated value
     df=df.drop_duplicates()
-    mask=df['seller_id'].duplicated()
-    df.loc[mask,'seller_id']=None
+    df = df.drop_duplicates(subset=['seller_id'])
     return df
 
+def debug_orddetails_merge():
+    raw_df = pd.read_sql(
+        "SELECT * FROM bronze.orddetails",
+        conn
+    )
 
+    print("\n===== INITIAL =====")
+    print("Raw:", raw_df.shape)
+
+    ord_df = pd.read_sql(
+        "SELECT order_id, order_sk FROM silver.orders",
+        conn
+    )
+
+    print("\n===== ORDERS =====")
+    print("orders shape:", ord_df.shape)
+    print("duplicate order_id:", ord_df['order_id'].duplicated().sum())
+    print("null order_id:", ord_df['order_id'].isna().sum())
+
+    temp = raw_df.merge(
+        ord_df,
+        on='order_id',
+        how='left'
+    )
+
+    print("After order merge:", temp.shape)
+
+    prod_df = pd.read_sql(
+        "SELECT prod_id, prod_sk FROM silver.prod",
+        conn
+    )
+
+    print("\n===== PRODUCTS =====")
+    print("prod shape:", prod_df.shape)
+    print("duplicate prod_id:", prod_df['prod_id'].duplicated().sum())
+    print("null prod_id:", prod_df['prod_id'].isna().sum())
+
+    temp = temp.merge(
+        prod_df,
+        on='prod_id',
+        how='left'
+    )
+
+    print("After product merge:", temp.shape)
+
+    seller_df = pd.read_sql(
+        "SELECT seller_id, seller_sk FROM silver.sellers",
+        conn
+    )
+
+    print("\n===== SELLERS =====")
+    print("seller shape:", seller_df.shape)
+    print("duplicate seller_id:", seller_df['seller_id'].duplicated().sum())
+    print("null seller_id:", seller_df['seller_id'].isna().sum())
+
+    temp = temp.merge(
+        seller_df,
+        on='seller_id',
+        how='left'
+    )
+
+    print("After seller merge:", temp.shape)
+
+    print("\n===== FINAL =====")
+    print("duplicates rows:", temp.duplicated().sum())
+    print("final shape:", temp.shape)

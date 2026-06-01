@@ -2,7 +2,7 @@ import pandas as pd
 from python_scripts.extract_silver import extract_silver_data
 from sql.connection import conn
 
-df=extract_silver_data('orddetails')
+#df=extract_silver_data('orddetails')
 #print(df.head(5))
 
 # For sellers table
@@ -69,10 +69,35 @@ def transform_fact(df):
                             od.order_id,
                             od.prod_sk,
                             od.seller_sk,
-                            o.cust_sk
+                            od.price,
+                            od.freight_val,
+                            o.cust_sk,
+                            DATE(o.purchase_timestamp) as full_date,
+                            o.order_sk,
+                            o.ord_status,
+                            p.payment_type,
+                            p.payment_installments,
+                            p.payment_value as payment_val,
+                            r.rev_score
+                            
                             FROM silver.orddetails od
+                            
                             LEFT JOIN silver.orders o
-                        ON od.order_id = o.order_id;''',conn)
-    print(ord_df.head(5))
+                        ON od.order_id = o.order_id
+                        
+                            LEFT JOIN silver.payment p
+                        ON od.order_id = p.order_id
+                            
+                            LEFT JOIN silver.reviews r
+                        ON od.order_id = r.order_id;''',conn)
     
-transform_fact(df)
+    date_df=pd.read_sql('SELECT full_date,date_sk FROM gold.dim_date;',conn)
+    print(ord_df.shape)
+    ord_df=ord_df.merge(
+        date_df,
+        on='full_date',
+        how='left'
+    )
+    print(ord_df.shape)
+    
+#transform_fact(df)

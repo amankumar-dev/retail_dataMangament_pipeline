@@ -50,22 +50,34 @@ def insert_dim_location(tableName,df):
     if(truncate_gold_data(tableName)):
         with conn:
             try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO gold.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)
-
+                
 def insert_dim_prod(tableName,df):
     if(truncate_gold_data(tableName)):
         with conn:
             try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO gold.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)
-
+                
 def insert_dim_prodeng(tableName,df):
     if(truncate_gold_data(tableName)):
         with conn:
             try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO gold.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)
@@ -74,6 +86,10 @@ def insert_dim_seller(tableName,df):
     if(truncate_gold_data(tableName)):
         with conn:
             try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO gold.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)
@@ -82,6 +98,10 @@ def insert_fact_sales(tableName,df):
     if(truncate_gold_data(tableName)):
         with conn:
             try:
+                result=dynamic_cols(df)
+                query=f'INSERT INTO gold.{tableName}({result[0]}) VALUES({result[1]});'     # Creating dynamic query
+                data=result[2]
+                cursor.executemany(query,data)      # Executing multiple query
                 print(f'{tableName} data inserted')
             except Exception as e:
                 print(f'{tableName} data not inserted ',e)

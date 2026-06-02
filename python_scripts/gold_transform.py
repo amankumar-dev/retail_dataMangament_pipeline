@@ -2,9 +2,6 @@ import pandas as pd
 from python_scripts.extract_silver import extract_silver_data
 from sql.connection import conn
 
-#df=extract_silver_data('orddetails')
-#print(df.head(5))
-
 # For sellers table
 def transform_sellers(df):
     df=df[['seller_sk','seller_id','seller_zipcode','seller_city','seller_state']]
@@ -64,7 +61,6 @@ def transform_location(df):
 
 # For fact table
 def transform_fact(df):
-    df=df[['order_id','prod_sk','seller_sk']]
     ord_df=pd.read_sql('''SELECT
                             od.order_id,
                             od.prod_sk,
@@ -92,12 +88,12 @@ def transform_fact(df):
                         ON od.order_id = r.order_id;''',conn)
     
     date_df=pd.read_sql('SELECT full_date,date_sk FROM gold.dim_date;',conn)
-    print(ord_df.shape)
+    
     ord_df=ord_df.merge(
         date_df,
         on='full_date',
         how='left'
     )
-    print(ord_df.shape)
     
-#transform_fact(df)
+    return ord_df
+    

@@ -197,8 +197,8 @@ def payment_data(df):
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
-    mask=ord_df['order_id'].duplicated()
-    ord_df.loc[mask,'order_id']=None
+    
+    ord_df = ord_df.dropna(subset=['order_id']).drop_duplicates(subset=['order_id'])    
     
     df=df.merge(
         ord_df,
@@ -261,8 +261,8 @@ def review_data(df):
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)
-    mask=ord_df['order_id'].duplicated()
-    ord_df.loc[mask,'order_id']=None
+    
+    ord_df = ord_df.dropna(subset=['order_id']).drop_duplicates(subset=['order_id'])
     
     df=df.merge(
         ord_df,

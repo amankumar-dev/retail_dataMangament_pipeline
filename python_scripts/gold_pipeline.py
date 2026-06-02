@@ -4,20 +4,17 @@ from python_scripts.gold_transform import transform_sellers,transform_cust,trans
 
 # Creating datasets to make code clean
 datasets = [
-    #('customers','dim_cust',insert_dim_customer),
-    #('geolocation','dim_location',insert_dim_location),
-    #('sellers','dim_seller',insert_dim_seller),
-    #('prodeng','dim_prodeng',insert_dim_prodeng),
-    #('prod','dim_prod',insert_dim_prod),
-    #('orddetails','dim_date',insert_dim_date)
+    #('sellers',transform_sellers,'dim_seller',insert_dim_seller),
+    #('customers',transform_cust,'dim_cust',insert_dim_customer),
+    ('prodeng',transform_prodeng,'dim_prodeng',insert_dim_prodeng),
+    #('prod',transform_prod,'dim_prod',insert_dim_prod),
+    #('orddetails',transform_date,'dim_date',insert_dim_date),
+    #('geolocation',transform_location,'dim_location',insert_dim_location),
+    #('orders',transform_fact,'fact_sales',insert_fact_sales)
 ]
 
-ord_details=extract_silver_data('orders')
-date_df=transform_date(ord_details)
-insert_dim_date('dim_date',date_df)
-
 # ETL Process
-for exTable,table,transform_fun,load_fun in datasets:
+for exTable,transform_fun,table,load_fun in datasets:
 
     # Extract
     df = extract_silver_data(exTable)

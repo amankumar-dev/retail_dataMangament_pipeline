@@ -4,13 +4,13 @@ from python_scripts.gold_transform import transform_sellers,transform_cust,trans
 
 # Creating datasets to make code clean
 datasets = [
-    #('sellers',transform_sellers,'dim_seller',insert_dim_seller),
-    #('customers',transform_cust,'dim_cust',insert_dim_customer),
+    ('sellers',transform_sellers,'dim_seller',insert_dim_seller),
+    ('customers',transform_cust,'dim_cust',insert_dim_customer),
     ('prodeng',transform_prodeng,'dim_prodeng',insert_dim_prodeng),
-    #('prod',transform_prod,'dim_prod',insert_dim_prod),
-    #('orddetails',transform_date,'dim_date',insert_dim_date),
-    #('geolocation',transform_location,'dim_location',insert_dim_location),
-    #('orders',transform_fact,'fact_sales',insert_fact_sales)
+    ('prod',transform_prod,'dim_prod',insert_dim_prod),
+    ('orders',transform_date,'dim_date',insert_dim_date),
+    ('geolocation',transform_location,'dim_location',insert_dim_location),
+    ('orders',transform_fact,'fact_sales',insert_fact_sales)
 ]
 
 # ETL Process
@@ -26,3 +26,4 @@ for exTable,transform_fun,table,load_fun in datasets:
     load_fun(table,df)
 
     print(f'{table} loaded successfully')
+    

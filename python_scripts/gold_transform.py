@@ -1,6 +1,9 @@
 import pandas as pd
-from python_scripts.extract_silver import extract_silver_data
 from sql.connection import conn
+from python_scripts.extract_silver import extract_silver_data
+
+#df=extract_silver_data('orders')
+#print(df.head(5))
 
 # For sellers table
 def transform_sellers(df):
@@ -95,5 +98,10 @@ def transform_fact(df):
         how='left'
     )
     
-    return ord_df
+    ord_df=ord_df.drop(columns=['full_date'])
     
+    return ord_df
+
+#df=transform_fact(df)
+#pd.set_option('display.max_columns', None)
+#print(df[df['order_sk'] == 93475])

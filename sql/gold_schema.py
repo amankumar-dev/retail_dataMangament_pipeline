@@ -56,7 +56,7 @@ def create_dim_prodeng(tableName):
     with conn:
         try:
             cursor.execute(f'''CREATE TABLE IF NOT EXISTS gold.{tableName}(
-                                prod_name_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                                prod_name_id INT PRIMARY KEY,
                                 prod_cat_name VARCHAR(255) UNIQUE,
                                 prod_cat_name_eng VARCHAR(255));''')
             print(f'{tableName} got created')
@@ -103,11 +103,11 @@ def create_fact_sales(tableName):
                                 prod_sk INT REFERENCES gold.dim_prod(prod_sk) ON DELETE CASCADE ON UPDATE CASCADE,
                                 seller_sk INT REFERENCES gold.dim_seller(seller_sk) ON DELETE CASCADE ON UPDATE CASCADE,
                                 date_sk INT REFERENCES gold.dim_date(date_sk) ON DELETE CASCADE ON UPDATE CASCADE,
-                                order_sk INT UNIQUE,
+                                order_sk INT,
                                 order_id VARCHAR(255),
                                 ord_status VARCHAR(30),
                                 payment_type VARCHAR(50),
-                                payment_installment INT,
+                                payment_installments INT,
                                 price NUMERIC(10,2),
                                 freight_val NUMERIC(10,2),
                                 payment_val NUMERIC(10,2),

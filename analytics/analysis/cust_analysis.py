@@ -1,5 +1,5 @@
 import pandas as pd
-from sql.analytics_queries import top_cust,repeat_cust,rev_per_cust
+from sql.analytics_queries import top_cust,repeat_cust,rev_per_cust,return_vs_new_cust
 
 def get_top_customers():
     result=top_cust()
@@ -23,7 +23,12 @@ def get_repeat_customers():
 def get_revenue_per_customer():
     result=rev_per_cust()[0]
     print(f'Revenue Per Customer: ₹{result:.2f}.')
-
-get_revenue_per_customer()
-
-#get_new_vs_returning_customers()
+    
+def get_new_vs_returning_customers():
+    result=return_vs_new_cust()
+    df=pd.DataFrame(
+        result,
+        columns=['Cust_Type','No_of_Cust']
+    )
+    print(df)
+    

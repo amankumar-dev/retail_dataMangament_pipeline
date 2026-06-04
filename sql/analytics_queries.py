@@ -135,6 +135,27 @@ def rev_per_cust():
             return result
         except Exception as e:
             print('state reveneue not fetched ',e)
+
+def return_vs_new_cust():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            CASE
+		                            WHEN total_orders = 1 THEN 'New'
+		                            ELSE 'Returning'
+	                                END AS customer_type,
+	                                COUNT(*) AS no_of_cust
+	                            FROM(SELECT
+			                            cust_sk,
+			                            COUNT(DISTINCT order_sk) AS total_orders
+			                            FROM gold.fact_sales
+			                            GROUP BY cust_sk
+		                            ) t
+	                            GROUP BY customer_type;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
             
 #data=total_rev()
 #print(data)

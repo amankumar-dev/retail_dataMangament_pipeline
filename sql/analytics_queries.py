@@ -156,6 +156,93 @@ def return_vs_new_cust():
             return result
         except Exception as e:
             print('state reveneue not fetched ',e)
+
+def top_selling_prod():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            p.prod_cat_name,
+	                            COUNT(*) AS occurrence
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_prod p
+	                            ON f.prod_sk=p.prod_sk
+	                            GROUP BY p.prod_cat_name
+	                            ORDER BY occurrence DESC
+                                LIMIT 3;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
             
+def least_selling_prod():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            p.prod_cat_name,
+	                            COUNT(f.prod_sk) AS occurrence
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_prod p
+	                            ON f.prod_sk=p.prod_sk
+	                            GROUP BY f.prod_sk,p.prod_cat_name
+	                            ORDER BY occurrence
+                                LIMIT 3;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+
+def top_rev_prod():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            f.prod_sk AS prod_id,
+	                            SUM(f.price+f.freight_val) AS revenue
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_prod p
+	                            ON f.prod_sk=p.prod_sk
+	                            GROUP BY f.prod_sk
+	                            ORDER BY revenue DESC
+	                            LIMIT 3;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def cat_perform():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+                                p.prod_cat_name,
+                                SUM(f.price + f.freight_val) AS revenue,
+                                COUNT(DISTINCT f.order_sk) AS total_orders,
+                                COUNT(*) AS units_sold
+                                FROM gold.fact_sales f
+                                JOIN gold.dim_prod p
+                                ON f.prod_sk = p.prod_sk
+                                GROUP BY p.prod_cat_name
+                                ORDER BY revenue DESC
+                                LIMIT 3;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            
+def prod_cont():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+                                p.prod_cat_name,
+                                SUM(f.price + f.freight_val) AS revenue,
+                                COUNT(DISTINCT f.order_sk) AS total_orders,
+                                COUNT(*) AS units_sold
+                                FROM gold.fact_sales f
+                                JOIN gold.dim_prod p
+                                ON f.prod_sk = p.prod_sk
+                                GROUP BY p.prod_cat_name
+                                ORDER BY revenue DESC
+                                LIMIT 3;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
 #data=total_rev()
 #print(data)

@@ -60,6 +60,36 @@ def state_rev():
         except Exception as e:
             print('state reveneue not fetched ',e)
             
-
+def prod_rev():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            p.prod_cat_name,
+	                            SUM(f.price+f.freight_val) AS total_rev
+	                            FROM gold.fact_sales f
+	                            LEFT JOIN gold.dim_prod p
+	                            ON f.prod_sk=p.prod_sk
+	                            GROUP BY p.prod_cat_name
+	                            ORDER BY total_rev DESC;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def avg_rev():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+                                SUM(price + freight_val) /
+                                COUNT(DISTINCT order_sk) AS avg_order_value
+                                FROM gold.fact_sales;''')
+            result=cursor.fetchone()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def top_cust():
+    
+            
 #data=total_rev()
 #print(data)

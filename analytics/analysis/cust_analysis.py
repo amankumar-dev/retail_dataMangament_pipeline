@@ -1,9 +1,12 @@
-get_top_customers()
+from sql.analytics_queries import top_cust
 
-get_repeat_customers()
+def get_top_customers():
+    pass
 
-get_customer_lifetime_value()
+#get_repeat_customers()
 
-get_revenue_per_customer()
+#get_customer_lifetime_value()
 
-get_new_vs_returning_customers()
+#get_revenue_per_customer()
+
+#get_new_vs_returning_customers()

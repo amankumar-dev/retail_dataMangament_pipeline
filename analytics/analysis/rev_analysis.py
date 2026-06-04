@@ -1,4 +1,4 @@
-from sql.analytics_queries import total_rev,monthly_rev,yearly_rev,state_rev
+from sql.analytics_queries import total_rev,monthly_rev,yearly_rev,state_rev,prod_rev,avg_rev
 import calendar
 import pandas as pd
 import numpy as np
@@ -38,8 +38,16 @@ def get_revenue_by_state():
     df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
     print(df)
 
-#get_revenue_by_category()
+def get_revenue_by_category():
+    result=prod_rev()
+    df=pd.DataFrame(
+        result,
+        columns=['Product Category','Revenue']
+    )
+    df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
+    print(df)
 
-#get_average_order_value()
-
-#get_total_revenue()
+def get_average_order_value():
+    result=avg_rev()[0]
+    print(f'Average Order Value: ₹{result:.2f}')
+    

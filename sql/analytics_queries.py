@@ -89,7 +89,52 @@ def avg_rev():
             print('state reveneue not fetched ',e)
             
 def top_cust():
-    
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            f.cust_sk AS cust_id,
+	                            c.cust_name,
+	                            SUM(f.price+f.freight_val) AS total_ord_amnt
+	                            FROM gold.fact_sales f
+	                            JOIN silver.customers c
+	                            ON f.cust_sk=c.cust_sk
+	                            GROUP BY f.cust_sk,c.cust_name
+	                            ORDER BY total_ord_amnt DESC
+	                            LIMIT 5;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+
+def repeat_cust():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            f.cust_sk AS cust_id,
+	                            c.cust_name,
+	                            COUNT(DISTINCT order_sk) AS repeated
+	                            FROM gold.fact_sales f
+	                            JOIN silver.customers c
+	                            ON f.cust_sk=c.cust_sk
+	                            GROUP BY f.cust_sk,c.cust_name
+	                            HAVING (COUNT(DISTINCT order_sk))>1
+	                            ORDER BY repeated DESC
+	                            LIMIT 5;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+
+def rev_per_cust():
+    with conn:
+        try:
+            cursor.execute('''SELECT
+	                            SUM(price+freight_val)/COUNT(DISTINCT(cust_sk)) rev_per_cust
+	                            FROM gold.fact_sales;''')
+            result=cursor.fetchone()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
             
 #data=total_rev()
 #print(data)

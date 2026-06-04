@@ -35,6 +35,7 @@ def get_revenue_by_state():
         result,
         columns=['State','Revenue']
     )
+    df['State']=df['State'].str.title()
     df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
     print(df)
 
@@ -44,6 +45,7 @@ def get_revenue_by_category():
         result,
         columns=['Product Category','Revenue']
     )
+    df['Product Category']=df['Product Category'].str.title()
     df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
     print(df)
 

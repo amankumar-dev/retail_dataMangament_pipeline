@@ -16,13 +16,12 @@ def monthly_rev():
         try:
             cursor.execute('''SELECT
                                 d.month,
-                                d.year,
                                 SUM(price+freight_val)
                                 FROM gold.fact_sales f
                                 JOIN gold.dim_date d
                                 ON f.date_sk=d.date_sk
-                                GROUP BY d.month,d.year
-                                ORDER BY d.month,d.year;''')
+                                GROUP BY d.month
+                                ORDER BY d.month;''')
             result=cursor.fetchall()
             return result
         except Exception as e:
@@ -54,7 +53,8 @@ def state_rev():
 	                            JOIN gold.dim_cust c
 	                            ON f.cust_sk=c.cust_sk
 	                            GROUP BY c.cust_state
-	                            ORDER BY total_rev;''')
+	                            ORDER BY total_rev DESC
+                                LIMIT 5;''')
             result=cursor.fetchall()
             return result
         except Exception as e:

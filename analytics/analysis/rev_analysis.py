@@ -13,12 +13,12 @@ def get_monthly_revenue():
     result=monthly_rev()
     df=pd.DataFrame(
         result,
-        columns=['Month','Year','Revenue']
+        columns=['Month','Revenue']
     )
     df['Month']=df['Month'].map(MONTH_MAP)
-    df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
+    df['Revenue']=(df['Revenue']/100000)
     
-    print(df)
+    return df
 
 def get_yearly_revenue():
     result=yearly_rev()
@@ -26,9 +26,9 @@ def get_yearly_revenue():
         result,
         columns=['Year','Revenue']
     )
-    df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
-    print(df)
-    
+    df['Revenue']=(df['Revenue']/100000)
+    return df
+
 def get_revenue_by_state():
     result=state_rev()
     df=pd.DataFrame(

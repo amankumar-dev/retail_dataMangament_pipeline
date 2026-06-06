@@ -225,21 +225,71 @@ def cat_perform():
             result=cursor.fetchall()
             return result
         except Exception as e:
-            
+            print('state reveneue not fetched ',e)
+
 def prod_cont():
     with conn:
         try:
-            cursor.execute('''SELECT
-                                p.prod_cat_name,
-                                SUM(f.price + f.freight_val) AS revenue,
-                                COUNT(DISTINCT f.order_sk) AS total_orders,
-                                COUNT(*) AS units_sold
-                                FROM gold.fact_sales f
-                                JOIN gold.dim_prod p
-                                ON f.prod_sk = p.prod_sk
-                                GROUP BY p.prod_cat_name
-                                ORDER BY revenue DESC
-                                LIMIT 3;''')
+            cursor.execute('''SELECT 
+	                            p.prod_cat_name,
+	                            SUM(f.price+f.freight_val) AS total_prod_rev,
+	                            (SUM(f.price+f.freight_val)/(SELECT(SUM(price+freight_val)) FROM gold.fact_sales))*100 AS contribution
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_prod p
+	                            ON f.prod_sk=p.prod_sk
+	                            GROUP BY p.prod_cat_name
+	                            ORDER BY total_prod_rev DESC;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def quarterly_rev():
+    with conn:
+        try:
+            cursor.execute('''SELECT 
+	                            d.quarter,
+	                            SUM(f.price+f.freight_val) AS total_rev
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_date d
+	                            ON f.date_sk=d.date_sk
+	                            GROUP BY d.quarter
+	                            ORDER BY quarter;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def weekday_rev():
+    with conn:
+        try:
+            cursor.execute('''SELECT 
+	                            d.day_name,
+	                            SUM(f.price+f.freight_val) AS total_rev
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_date d
+	                            ON f.date_sk=d.date_sk
+	                            GROUP BY d.day_name
+	                            ORDER BY total_rev DESC;''')
+            result=cursor.fetchall()
+            return result
+        except Exception as e:
+            print('state reveneue not fetched ',e)
+            
+def weekday_vs_weekend():
+    with conn:
+        try:
+            cursor.execute('''SELECT 
+	                            CASE
+	                            	WHEN d.day_name IN ('Monday','Tuesday','Wednesday','Thursday','Friday') THEN 'Weekday'
+	                            	ELSE 'Weekend'
+	                            END AS day_type,
+	                            SUM(f.price+f.freight_val) AS total_rev
+	                            FROM gold.fact_sales f
+	                            JOIN gold.dim_date d
+	                            ON f.date_sk=d.date_sk
+	                            GROUP BY day_type
+	                            ORDER BY total_rev DESC;''')
             result=cursor.fetchall()
             return result
         except Exception as e:

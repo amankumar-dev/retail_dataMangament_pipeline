@@ -39,4 +39,13 @@ def get_category_performance():
     print(df)
 
 def get_product_contribution():
-    pass
+    result=prod_cont()
+    df=pd.DataFrame(
+        result,
+        columns=['Product Category','Revenue','Contribution']
+    )
+    df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
+    df['Contribution']=(df['Contribution']).map('{:.2f} %'.format)
+    df['Product Category']=df['Product Category'].str.title()
+    print(df)
+    

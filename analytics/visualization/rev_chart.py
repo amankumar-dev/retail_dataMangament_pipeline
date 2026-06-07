@@ -1,4 +1,4 @@
-from analytics.analysis.rev_analysis import get_monthly_revenue,get_yearly_revenue
+from analytics.analysis.rev_analysis import get_monthly_revenue,get_yearly_revenue,get_revenue_by_state
 import matplotlib.pyplot as plt
 
 def monthly_rev_chart():
@@ -37,5 +37,22 @@ def yearly_rev_chart():
     )
     plt.close()
 
-monthly_rev_chart()
-yearly_rev_chart()
+def state_rev_chart():
+    df=get_revenue_by_state()
+    
+    plt.figure(figsize=(10,5))
+    plt.bar(df['State'].astype(str),df['Revenue'],width=0.4)
+    
+    plt.title('State Revenue')
+    plt.xlabel('State')
+    plt.ylabel('Revenue (L)')
+    
+    plt.tight_layout()
+    
+    plt.savefig(
+        "analytics/reports/state_revenue.png",
+        bbox_inches="tight"
+    )
+    plt.close()
+    
+state_rev_chart()

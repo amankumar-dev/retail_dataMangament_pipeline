@@ -221,7 +221,7 @@ def cat_perform():
                                 ON f.prod_sk = p.prod_sk
                                 GROUP BY p.prod_cat_name
                                 ORDER BY revenue DESC
-                                LIMIT 3;''')
+                                LIMIT 10;''')
             result=cursor.fetchall()
             return result
         except Exception as e:
@@ -238,7 +238,8 @@ def prod_cont():
 	                            JOIN gold.dim_prod p
 	                            ON f.prod_sk=p.prod_sk
 	                            GROUP BY p.prod_cat_name
-	                            ORDER BY total_prod_rev DESC;''')
+	                            ORDER BY total_prod_rev DESC
+                                LIMIT 5;''')
             result=cursor.fetchall()
             return result
         except Exception as e:

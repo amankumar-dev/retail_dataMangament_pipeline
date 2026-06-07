@@ -30,5 +30,5 @@ def get_new_vs_returning_customers():
         result,
         columns=['Cust_Type','No_of_Cust']
     )
-    print(df)
+    return df
     

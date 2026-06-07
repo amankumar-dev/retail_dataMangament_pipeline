@@ -34,9 +34,9 @@ def get_category_performance():
         result,
         columns=['Product Category','Revenue','Total Orders','Units Sold']
     )
-    df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
+    df['Revenue']=(df['Revenue']/1000)
     df['Product Category']=df['Product Category'].str.title()
-    print(df)
+    return df
 
 def get_product_contribution():
     result=prod_cont()
@@ -44,8 +44,7 @@ def get_product_contribution():
         result,
         columns=['Product Category','Revenue','Contribution']
     )
-    df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
-    df['Contribution']=(df['Contribution']).map('{:.2f} %'.format)
+    df['Revenue']=(df['Revenue']/100000)
     df['Product Category']=df['Product Category'].str.title()
-    print(df)
+    return df
     

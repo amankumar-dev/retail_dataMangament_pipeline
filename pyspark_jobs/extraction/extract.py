@@ -1,7 +1,8 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import when,col,trim,lower
+from pyspark.sql.functions import when,col,trim,lower,count,filter
 from pyspark.sql.types import StringType
 import numpy as np
+import uuid
 spark=SparkSession.builder.appName('temp').getOrCreate()
 
 cust=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/customers.csv',
@@ -40,19 +41,4 @@ seller=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/d
                       inferSchema=True,
                       header=True)
 
-cust=cust.select(
-    *[
-        (
-            when(
-                (trim(lower(col(f.name)))=='nan')|
-                (trim(lower(col(f.name)))=='na')|
-                (trim(col(f.name))==''),
-                None
-            ).otherwise(col(f.name)).alias(f.name)
-            if isinstance(f.dataType,StringType)
-            else col(f.name)
-        )
-        for f in cust.schema.fields
-    ]   
-)
-
+cust=cust.dropDuplicates()

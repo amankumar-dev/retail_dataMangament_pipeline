@@ -1,10 +1,10 @@
 from pyspark_jobs.extraction.extract import cust
-from pyspark.sql.functions import when,col,trim,lower
+from pyspark.sql.functions import when,col,trim,lower,expr
 from pyspark.sql.types import StringType
+import uuid
 
-# Customer transformation
-def cust_trans(cust):
-    cust=cust.select(
+def replace_na(df):
+    df=df.select(
         *[
             (
                 when(
@@ -12,12 +12,55 @@ def cust_trans(cust):
                     (trim(lower(col(f.name)))=='na')|
                     (trim(col(f.name))==''),
                     None
-                ).otherwise(f.name).alias(f.name)
+                ).otherwise(col(f.name)).alias(f.name)
                 if isinstance(f.dataType,StringType)
                 else col(f.name)
             )
+            for f in df.schema.fields
+        ]
+    )
+    
+    return df
+
+# Customer transformation
+def cust_trans(cust):
+    # Replace string NA's
+    cust=replace_na(cust)
+    
+    # Standarize text
+    cust=cust.select(
+        *[
+            trim(lower(col(f.name))).alias(f.name)
+            if isinstance(f.dataType, StringType)
+            else col(f.name)
+            
             for f in cust.schema.fields
         ]
     )
     
-cust_trans(cust)
+    # Handle null value
+    cust=cust.withColumn(
+        'cust_unq_id',
+        when(col('cust_unq_id').isNull(),expr("uuid()"))
+        .otherwise(col('cust_unq_id'))
+    )
+    
+    # Drop full empty row
+    cust=cust.dropna(how='all')
+    
+    # Fix datatypes
+    cust=cust.withColumn(
+        'cust_zipcode',
+        trim(col('cust_zipcode').cast('string'))
+    )
+
+    # Drop duplicated value
+    cust=cust.dropDuplicates()
+    cust=cust.dropDuplicates(['cust_unq_id'])
+    cust=cust.dropDuplicates(['cust_id'])
+    
+    return cust
+    
+    
+df=cust_trans(cust)
+df.show()

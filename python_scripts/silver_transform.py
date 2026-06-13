@@ -53,16 +53,16 @@ def geolocation_data(df):
     
     columns=df.columns
     
+    # Standarize value
+    df['geo_lat'] = df['geo_lat'].round(4)
+    df['geo_lng'] = df['geo_lng'].round(4)
+    
     # Convert string NaN into numpy NaN
     for cols in columns:
        # Standarize text
         if cols not in ['timestampp']:
             df[f'{cols}']=df[f'{cols}'].astype(str)
             df[f'{cols}']=df[f'{cols}'].str.lower().str.strip()
-    
-    # Standarize value
-    df['geo_lat'] = df['geo_lat'].round(4)
-    df['geo_lng'] = df['geo_lng'].round(4)
     
     # Drop duplcated value
     df=df.drop_duplicates()

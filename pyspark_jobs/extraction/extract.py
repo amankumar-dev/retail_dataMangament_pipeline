@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import when,col,trim,lower,count,filter
+from pyspark.sql.functions import when,col,trim,lower,count,filter,round
 from pyspark.sql.types import StringType
 import numpy as np
 import uuid
@@ -13,7 +13,7 @@ geo=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/data
                    inferSchema=True,
                    header=True)
 
-order_details=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/orderDetails.csv',
+orddetails=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/orderDetails.csv',
                      inferSchema=True,
                      header=True)
 
@@ -41,4 +41,6 @@ seller=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/d
                       inferSchema=True,
                       header=True)
 
-cust=cust.dropDuplicates()
+
+
+orddetails.show()

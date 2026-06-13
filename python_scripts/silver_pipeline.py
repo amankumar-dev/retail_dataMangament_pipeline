@@ -10,7 +10,7 @@ datasets = [
     ('sellers',seller_data,insert_silver_sellers),
     ('prod',prod_data,insert_silver_prod),
     ('orders',orders_data,insert_silver_orders),
-    ('orddetails',orderDetails_data,insert_silver_orddetails)
+    ('orddetails',orderDetails_data,insert_silver_orddetails),
     ('reviews',review_data,insert_silver_reviews),
     ('payment',payment_data,insert_silver_payment)
 ]

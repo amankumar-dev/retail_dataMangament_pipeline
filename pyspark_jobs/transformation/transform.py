@@ -1,5 +1,5 @@
-from pyspark_jobs.extraction.extract import cust
-from pyspark.sql.functions import when,col,trim,lower,expr
+from pyspark_jobs.extraction.extract import cust,geo
+from pyspark.sql.functions import when,col,trim,lower,expr,round
 from pyspark.sql.types import StringType
 import uuid
 
@@ -8,8 +8,8 @@ def replace_na(df):
         *[
             (
                 when(
-                    (trim(lower(col(f.name)))=='nan')|
-                    (trim(lower(col(f.name)))=='na')|
+                    (trim(lower(col(f.name)))=='nan') |
+                    (trim(lower(col(f.name)))=='na') |
                     (trim(col(f.name))==''),
                     None
                 ).otherwise(col(f.name)).alias(f.name)
@@ -60,7 +60,49 @@ def cust_trans(cust):
     cust=cust.dropDuplicates(['cust_id'])
     
     return cust
+
+# Location transformation
+def geo_trans(geo):
+    geo=replace_na(geo)
+    
+    # Standarize Text
+    geo=geo.select(
+    *[
+            (
+                trim(lower(col(f.name))).cast('string').alias(f.name)
+                if f.name != 'timestampp'
+                else col(f.name)
+            )
+            for f in geo.schema.fields
+        ]
+    )
+    
+    # Standarize value
+    geo=geo.withColumns({
+        'geo_lat':round(col('geo_lat'),4),
+        'geo_lng':round(col('geo_lng'),4)
+    })
+    
+    # Drop duplicated value
+    geo=geo.dropDuplicates()
+    geo=geo.dropDuplicates(['geo_zipcode','geo_lat','geo_lng'])
+    
+    return geo
+
+# Orddetails transformation
+def orddetail_trans(orddetails):
+    orddetails=replace_na(orddetails)
+    
+    # Standarize Text
+    orddetails=orddetails.select(
+    *[
+        (
+            trim(lower(col(f.name))).alias(f.name)
+            if isinstance(f.dataType,StringType)
+            else col(f.name)
+        )
+        for f in orddetails.schema.fields
+    ]
     
     
-df=cust_trans(cust)
-df.show()
+)

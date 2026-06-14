@@ -1,4 +1,4 @@
-from pyspark_jobs.extraction.extract import cust,geo
+from pyspark_jobs.extraction.extract import cust,geo,orddetails,orders,payment,prod,prodName
 from pyspark.sql.functions import when,col,trim,lower,expr,round
 from pyspark.sql.types import StringType
 import uuid
@@ -106,3 +106,116 @@ def orddetail_trans(orddetails):
     
     
 )
+    
+# Orders transformation
+def ord_trans(orders):
+    orders=replace_na(orders)
+    
+    # Handle null
+    orders=orders.withColumn(
+        "approved_at",
+        when(
+            col('approved_at').isNull(),
+            expr('purchase_timestamp + INTERVAL 15 MINUTES')
+        ).otherwise(col('approved_at')).alias('approved_at')
+    )
+    
+    orders=orders.withColumn(
+        'delivered_carrier_date',
+        when(
+            col('delivered_carrier_date').isNull(),
+            expr('approved_at + INTERVAL 2 DAYS')
+        ).otherwise(col('delivered_carrier_date')).alias('delivered_carrier_date')
+    )
+    
+    orders=orders.withColumn(
+        'delivered_customer_date',
+        when(
+            col('delivered_customer_date').isNull(),
+            expr('delivered_carrier_date + INTERVAL 4 DAYS')
+        )
+    )
+    
+    # Business rule implementation
+    orders=orders.withColumn(
+        'delivered_carrier_date',
+        when(
+            col('approved_at')>col('delivered_carrier_date'),
+            expr('approved_at + INTERVAL 2 DAYS')
+        ).otherwise(col('delivered_carrier_date')).alias('delivered_carrier_date')
+    )
+
+    orders=orders.withColumn(
+        'delivered_customer_date',
+        when(
+            col('delivered_carrier_date')>col('delivered_customer_date'),
+            expr('delivered_carrier_date + INTERVAL 2 DAYS')
+        ).otherwise(col('delivered_customer_date')).alias('delivered_customer_date')
+    )
+
+    # Handle wrong status value availability
+    orders=orders.withColumn(
+        'delivered_customer_date',
+        when(
+            col('ord_status')=='shipped',
+            None
+        ).otherwise(col('delivered_customer_date')).alias('delivered_customer_date')
+    )   
+    
+    orders=orders.withColumns({
+        'delivered_customer_date':when(
+            col('ord_status')=='canceled',
+            None
+        ).otherwise(col('delivered_customer_date')),
+        'estimated_delivery_date':when(
+            col('ord_status')=='canceled',
+            None
+        ).otherwise(col('estimated_delivery_date'))
+    })
+    
+    orders=orders.withColumns({
+        'delivered_customer_date':when(
+            col('ord_status')=='invoiced',
+            None
+        ).otherwise(col('delivered_customer_date')),
+        'estimated_delivery_date':when(
+            col('ord_status')=='invoiced',
+            None
+        ).otherwise(col('estimated_delivery_date')),
+        'delivered_carrier_date':when(
+            col('ord_status')=='invoiced',
+            None
+        ).otherwise(col('delivered_carrier_date'))
+    })
+    
+    # Drop duplicates
+    orders=orders.dropna(subset=['order_id']).dropDuplicates(['order_id'])
+
+# Payment transformation
+def payment_trans(payment):
+    payment=replace_na(payment)
+    
+    # Handling null values
+    payment=payment.withColumn(
+        'payment_type',
+        when(
+            col('payment_type').isNull(),
+            'voucher'
+        ).otherwise(col('payment_type')).alias('payment_type')
+    )
+    
+# Product transformation
+def prod_trans(prod):
+    prod=replace_na(prod)
+    
+# Product Name transformation
+def prodName_trans(prodName):
+    prodName=replace_na(prodName)
+
+# Review Transformation
+def review_trans(review):
+    review=replace_na(review)
+    
+# Seller Transformation
+def seller_trans(seller):
+    seller=replace_na(seller)

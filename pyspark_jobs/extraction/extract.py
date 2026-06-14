@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import when,col,trim,lower,count,filter,round
+from pyspark.sql.functions import when,col,trim,lower,count,filter,round,expr,unix_timestamp
 from pyspark.sql.types import StringType
 import numpy as np
 import uuid
@@ -43,4 +43,6 @@ seller=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/d
 
 
 
-orddetails.show()
+print(payment.filter(
+    col('payment_type').isNull()
+).count())

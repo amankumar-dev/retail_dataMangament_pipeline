@@ -1,48 +1,26 @@
-from pyspark.sql import SparkSession
 from pyspark.sql.functions import when,col,trim,lower,count,filter,round,expr,unix_timestamp
 from pyspark.sql.types import StringType
 import numpy as np
 import uuid
-spark=SparkSession.builder.appName('temp').getOrCreate()
+from pyspark_jobs.db_connection.py_db import read_table
 
-cust=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/customers.csv',
-                    inferSchema=True,
-                    header=True)
+cust=read_table('silver.customers')
 
-geo=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/geolocation.csv',
-                   inferSchema=True,
-                   header=True)
+geo=read_table('silver.geolocation')
 
-orddetails=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/orderDetails.csv',
-                     inferSchema=True,
-                     header=True)
+orddetails=read_table('bronze.orddetails')
 
-orders=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/orders.csv',
-                      inferSchema=True,
-                      header=True)
+orders=read_table('silver.orders')
 
-payment=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/payment.csv',
-                       inferSchema=True,
-                       header=True)
+payment=read_table('silver.payment')
 
-prodName=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/productNameEng.csv',
-                        inferSchema=True,
-                        header=True)
+prodName=read_table('silver.prodeng')
 
-prod=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/products.csv',
-                    inferSchema=True,
-                    header=True)
+prod=read_table('silver.prod')
 
-review=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/reviews.csv',
-                      inferSchema=True,
-                      header=True)
+review=read_table('silver.reviews')
 
-seller=spark.read.csv(r'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/raw/sellers.csv',
-                      inferSchema=True,
-                      header=True)
+seller=read_table('silver.sellers')
 
 
-
-print(payment.filter(
-    col('payment_type').isNull()
-).count())
+orddetails.show()

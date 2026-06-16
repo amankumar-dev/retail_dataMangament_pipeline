@@ -104,6 +104,36 @@ def orddetail_trans(orddetails):
         for f in orddetails.schema.fields
     ]
     
+    # Join Operation
+    ord_df=orders.select('order_id','order_sk')
+    prod_df=prod.select('prod_id','prod_sk')
+    seller_df=seller.select('seller_id','seller_sk')
+
+    orddetails=(
+        orddetails.alias('o')
+        .join(
+            ord_df.alias('ord'),
+            col('o.order_id')==col('ord.order_id'),
+            'left'
+        )
+        .join(
+            prod_df.alias('p'),
+            col('o.prod_id')==col('p.prod_id'),
+            'left'
+        )
+        .join(
+            seller_df.alias('s'),
+            col('o.seller_id')==col('s.seller_id'),
+            'left'
+        )
+        .select(
+            'o.*',
+            'ord.order_sk',
+            'p.prod_sk',
+            's.seller_sk'
+        )
+    )
+    
     
 )
     

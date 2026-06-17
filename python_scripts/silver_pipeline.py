@@ -23,6 +23,9 @@ for table, transform_fun, load_fun in datasets:
 
     # Transform
     df = transform_fun(df)
+    
+    # Write
+    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/silver/silver_{table}.csv',index=False)
 
     # Load
     load_fun(df, table)

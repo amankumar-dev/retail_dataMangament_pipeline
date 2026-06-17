@@ -13,3 +13,7 @@ datasets/raw/
 *.zip
 
 .airflowignore
+
+datasets/bronze/*.csv
+datasets/silver/*.csv
+datasets/gold/*.csv

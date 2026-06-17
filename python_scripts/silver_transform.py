@@ -357,3 +357,4 @@ def debug_orddetails_merge():
     print("\n===== FINAL =====")
     print("duplicates rows:", temp.duplicated().sum())
     print("final shape:", temp.shape)
+

@@ -1,6 +1,7 @@
-from pyspark_jobs.extraction.extract import cust,geo,orddetails,orders,payment,prod,prodName
+from pyspark_jobs.extraction.extract import cust,geo,orddetails,orders,payment,prod,prodName,seller
 from pyspark.sql.functions import when,col,trim,lower,expr,round
 from pyspark.sql.types import StringType
+from pyspark_jobs.db_connection.py_db import read_table
 import uuid
 
 def replace_na(df):
@@ -102,11 +103,14 @@ def orddetail_trans(orddetails):
             else col(f.name)
         )
         for f in orddetails.schema.fields
-    ]
+    ])
     
     # Join Operation
-    ord_df=orders.select('order_id','order_sk')
+    ord_df=read_table('silver.orders')
+    ord_df=ord_df.select('order_id','order_sk')
+    prod_df=read_table('silver.prod')
     prod_df=prod.select('prod_id','prod_sk')
+    seller_df=read_table('silver.seller')
     seller_df=seller.select('seller_id','seller_sk')
 
     orddetails=(
@@ -134,8 +138,7 @@ def orddetail_trans(orddetails):
         )
     )
     
-    
-)
+    return orddetails
     
 # Orders transformation
 def ord_trans(orders):
@@ -220,6 +223,20 @@ def ord_trans(orders):
     
     # Drop duplicates
     orders=orders.dropna(subset=['order_id']).dropDuplicates(['order_id'])
+    
+    # Cust_sk mapping
+    orders=(
+        orders.alias('o').join(
+            cust.alias('c'),
+            col('o.cust_id')==col('c.cust_id'),
+            'left'
+        ).select(
+            'o.*',
+            'c.cust_sk'
+        )
+    )
+    
+    return orders
 
 # Payment transformation
 def payment_trans(payment):
@@ -234,18 +251,59 @@ def payment_trans(payment):
         ).otherwise(col('payment_type')).alias('payment_type')
     )
     
+    # For order_sk mapping
+    payment=(
+        payment.alias('p').join(
+            orders.alias('o'),
+            col('p.order_id')==col('o.order_id'),
+            'left'
+        ).select(
+            'p.*',
+            'o.order_sk'
+        )
+    )
+
+    payment=payment.dropna(subset=['order_id']).dropDuplicates(['order_id'])
+    
+    return payment
+    
 # Product transformation
 def prod_trans(prod):
     prod=replace_na(prod)
     
+    prod=prod.dropDuplicates(['prod_id'])
+    
+    return prod
+    
 # Product Name transformation
 def prodName_trans(prodName):
     prodName=replace_na(prodName)
+    
+    return prodName
 
 # Review Transformation
 def review_trans(review):
     review=replace_na(review)
     
+    review=(
+        review.alias('r').join(
+            orders.alias('o'),
+            col('r.order_id')==col('o.order_id'),
+            'left'
+        ).select(
+            'r.*',
+            'o.order_sk'
+        )
+    )
+    
+    review=review.dropDuplicates(['review_id'])
+    
+    return review
+    
 # Seller Transformation
 def seller_trans(seller):
     seller=replace_na(seller)
+    
+    seller=seller.dropDuplicates(['seller_id'])
+    
+

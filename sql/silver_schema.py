@@ -18,7 +18,7 @@ def silver_table_customer():
                             cust_sk SERIAL PRIMARY KEY,
                             cust_id VARCHAR(255),
                             cust_unq_id UUID UNIQUE,
-                            cust_zipcode INT,
+                            cust_zipcode VARCHAR(20),
                             cust_city VARCHAR(255),
                             cust_state VARCHAR(255),
                             cust_name VARCHAR(255),

@@ -19,9 +19,9 @@ datasets=[
     (sellers,'sellers.csv',insert_bronze_sellers,'sellers')
 ]
 
-#print(orderDetails.head(5))
-
-for df,source,load_fun,table in datasets:
-    df=ingestion(df,source,batch_id)
-    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/bronze/bronze_{source}',index=False)
-    load_fun(df,table)
+def bronze_pipeline():
+    for df,source,load_fun,table in datasets:
+        df=ingestion(df,source,batch_id)
+        df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/bronze/bronze_{source}',index=False)
+        load_fun(df,table)
+    

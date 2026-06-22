@@ -7,7 +7,6 @@ def extract_bronze_data(tableName):
     try:
         query=f'SELECT * FROM bronze.{tableName};'
         df=pd.read_sql(query,conn)
-        #print(f'{tableName} bronze data fetched successfully')
         return df
     except Exception as e:
         print(f'{tableName} data not fetched ',e)

@@ -23,7 +23,7 @@ for exTable,transform_fun,table,load_fun in datasets:
     df = transform_fun(df)
     
     # Write
-    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/gold/gold_{exTable}.csv')
+    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/gold/gold_{table}.csv')
     
     # Load
     load_fun(table,df)

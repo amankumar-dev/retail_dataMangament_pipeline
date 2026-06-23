@@ -15,19 +15,20 @@ datasets = [
     ('payment',payment_data,insert_silver_payment)
 ]
 
-# ETL Process
-for table, transform_fun, load_fun in datasets:
+def silver_pipeline():
+    # ETL Process
+    for table, transform_fun, load_fun in datasets:
 
-    # Extract
-    df = extract_bronze_data(table)
+        # Extract
+        df = extract_bronze_data(table)
 
-    # Transform
-    df = transform_fun(df)
-    
-    # Write
-    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/silver/silver_{table}.csv',index=False)
+        # Transform
+        df = transform_fun(df)
 
-    # Load
-    load_fun(df, table)
+        # Write
+        df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/silver/silver_{table}.csv',index=False)
 
-    print(f'{table} loaded successfully')
+        # Load
+        load_fun(df, table)
+
+        print(f'{table} loaded successfully')

@@ -258,6 +258,10 @@ def review_data(df):
     mask=df['review_id'].duplicated()
     df.loc[mask,'review_id']=None
     
+    # Handle wrong rev score
+    mask=df['rev_score']<1
+    df.loc[mask,'rev_score']=None
+    
     # For order_sk mapping
     ord_df=pd.read_sql('''SELECT order_id,order_sk
                             FROM silver.orders;''',conn)

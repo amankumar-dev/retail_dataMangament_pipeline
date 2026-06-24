@@ -30,5 +30,4 @@ def silver_pipeline():
 
         # Load
         load_fun(df, table)
-
-        print(f'{table} loaded successfully')
+        

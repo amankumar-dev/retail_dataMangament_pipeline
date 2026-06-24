@@ -1,8 +1,8 @@
-from airflow.sdk import dag,task
+from airflow.sdk import dag
 from datetime import datetime
 from tasks.sensors import wait_bronze
 from tasks.bronze_tasks import bronze_task
-from tasks.validation_tasks import validate_bronze_task
+from tasks.validation_tasks import validate_bronze_task,validate_silver_task
 from tasks.silver_tasks import silver_task
 
 
@@ -28,3 +28,6 @@ def retail_pipeline():
     
     # For load silver file
     load_silver=silver_task()
+    
+    # Validate Silver
+    validate_silver=validate_silver_task()

@@ -7,7 +7,7 @@ MONTH_MAP = dict(enumerate(calendar.month_abbr))
 
 def get_total_revenue():
     result=total_rev()[0]
-    print(f'Total Revenue: ₹{float(result/10000000):.2f} cr.')
+    return result
 
 def get_monthly_revenue():
     result=monthly_rev()
@@ -47,9 +47,9 @@ def get_revenue_by_category():
     )
     df['Product Category']=df['Product Category'].str.title()
     df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
-    print(df)
+    return df
 
 def get_average_order_value():
     result=avg_rev()[0]
-    print(f'Average Order Value: ₹{result:.2f}')
+    return result
     

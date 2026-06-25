@@ -55,4 +55,7 @@ def state_rev_chart():
     )
     plt.close()
     
-state_rev_chart()
+def rev_chart():
+    monthly_rev_chart()
+    yearly_rev_chart()
+    state_rev_chart()

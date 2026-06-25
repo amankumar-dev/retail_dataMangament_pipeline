@@ -1,5 +1,5 @@
-from airflow.sdk import task
-from airflow.sdk.bases.sensor import PokeReturnValue
+from airflow.decorators import task
+from airflow.sensors.base import PokeReturnValue
 import os
 import logging
 

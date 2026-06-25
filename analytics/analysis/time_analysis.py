@@ -11,7 +11,7 @@ def get_revenue_by_year():
         columns=['Year','Revenue']
     )
     df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
-    print(df)
+    return df
 
 def get_revenue_by_month():
     result=monthly_rev()
@@ -21,6 +21,7 @@ def get_revenue_by_month():
     )
     df['Month']=df['Month'].map(MONTH_MAP)
     df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
+    return df
 
 def get_revenue_by_quarter():
     result=quarterly_rev()
@@ -29,7 +30,7 @@ def get_revenue_by_quarter():
         columns=['Quarter','Revenue']
     )
     df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
-    print(df)
+    return df
 
 def get_weekday_sales():
     result=weekday_rev()
@@ -38,7 +39,7 @@ def get_weekday_sales():
         columns=['Weekday','Revenue']
     )
     df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
-    print(df)    
+    return df    
 
 def get_weekend_vs_weekday_sales():
     result=weekday_vs_weekend()
@@ -47,5 +48,5 @@ def get_weekend_vs_weekday_sales():
         columns=['Day Type','Revenue']
     )
     df['Revenue']=(df['Revenue']/100000).map('₹{:.2f} l'.format)
-    print(df)
+    return df
     

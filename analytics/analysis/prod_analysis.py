@@ -8,7 +8,7 @@ def get_top_selling_prod_cat():
         columns=['Prod_name','Sold']
     )
     df['Prod_name']=df['Prod_name'].str.title()
-    print(df)
+    return df
 
 def get_least_selling_prod_cat():
     result=least_selling_prod()
@@ -17,7 +17,7 @@ def get_least_selling_prod_cat():
         columns=['Prod_id','Prod_name','Sold']
     )
     df['Prod_name']=df['Prod_name'].str.title()
-    print(df)
+    return df
 
 def get_top_revenue_products():
     result=top_rev_prod()
@@ -26,7 +26,7 @@ def get_top_revenue_products():
         columns=['Prod_id','Revenue']
     )
     df['Revenue']=(df['Revenue']/1000).map('₹{:.2f} k'.format)
-    print(df)
+    return df
     
 def get_category_performance():
     result=cat_perform()

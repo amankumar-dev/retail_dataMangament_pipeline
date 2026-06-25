@@ -13,20 +13,21 @@ datasets = [
     ('orders',transform_fact,'fact_sales',insert_fact_sales)
 ]
 
-# ETL Process
-for exTable,transform_fun,table,load_fun in datasets:
+def gold_pipeline():
+    # ETL Process
+    for exTable,transform_fun,table,load_fun in datasets:
 
-    # Extract
-    df = extract_silver_data(exTable)
+        # Extract
+        df = extract_silver_data(exTable)
 
-    # Transform
-    df = transform_fun(df)
-    
-    # Write
-    df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/gold/gold_{table}.csv')
-    
-    # Load
-    load_fun(table,df)
+        # Transform
+        df = transform_fun(df)
 
-    print(f'{table} loaded successfully')
+        # Write
+        df.to_csv(f'/mnt/d/aman/aman.code/dataengproject/retail_management/datasets/gold/gold_{table}.csv')
+
+        # Load
+        load_fun(table,df)
+
+        print(f'{table} loaded successfully')
     

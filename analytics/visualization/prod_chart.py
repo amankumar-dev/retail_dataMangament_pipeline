@@ -42,3 +42,6 @@ def prod_contr_chart():
 
     plt.close()
     
+def prod_chart():
+    prod_contr_chart()
+    cat_perf_chart()

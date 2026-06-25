@@ -20,4 +20,5 @@ def cust_analysis_chart():
     
     plt.close()
     
-cust_analysis_chart()
+def cust_chart():
+    cust_analysis_chart()

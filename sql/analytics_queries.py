@@ -54,7 +54,7 @@ def state_rev():
 	                            ON f.cust_sk=c.cust_sk
 	                            GROUP BY c.cust_state
 	                            ORDER BY total_rev DESC
-                                LIMIT 5;''')
+                                LIMIT 10;''')
             result=cursor.fetchall()
             return result
         except Exception as e:
@@ -100,7 +100,7 @@ def top_cust():
 	                            ON f.cust_sk=c.cust_sk
 	                            GROUP BY f.cust_sk,c.cust_name
 	                            ORDER BY total_ord_amnt DESC
-	                            LIMIT 5;''')
+	                            LIMIT 10;''')
             result=cursor.fetchall()
             return result
         except Exception as e:
@@ -119,7 +119,7 @@ def repeat_cust():
 	                            GROUP BY f.cust_sk,c.cust_name
 	                            HAVING (COUNT(DISTINCT order_sk))>1
 	                            ORDER BY repeated DESC
-	                            LIMIT 5;''')
+	                            LIMIT 10;''')
             result=cursor.fetchall()
             return result
         except Exception as e:
@@ -239,7 +239,7 @@ def prod_cont():
 	                            ON f.prod_sk=p.prod_sk
 	                            GROUP BY p.prod_cat_name
 	                            ORDER BY total_prod_rev DESC
-                                LIMIT 5;''')
+                                LIMIT 10;''')
             result=cursor.fetchall()
             return result
         except Exception as e:

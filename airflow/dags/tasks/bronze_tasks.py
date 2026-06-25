@@ -1,4 +1,4 @@
-from airflow.sdk import task
+from airflow.decorators import task
 from datetime import datetime,timedelta
 
 @task(retries=3,retry_delay=timedelta(minutes=5))

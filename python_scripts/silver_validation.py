@@ -34,7 +34,7 @@ def silver_orders_validation(df):
     
 def silver_review_validation(df):
     # Check rev_score
-    if not df['rev_score'].between(1,5).all():
+    if not df['rev_score'].dropna().between(1,5).all():
         log.error('review scores are unexpected')
         raise ValueError('review scores are unexpected')
     
